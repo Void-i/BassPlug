@@ -422,42 +422,12 @@ var updateChat = function(from, message){
     })
 }
 /*ChatCommands*/
-{
-    var dyel = ["Do you even laugh - http://i.imgur.com/jnSIq.png", "Do you even drift - http://i.imgur.com/4s42S.jpg", "Do you even gift - http://i.imgur.com/LNTiD.jpg", "Do you even shift - http://i.imgur.com/W6GOH.jpg", "Do you even swift - http://i.imgur.com/Pf68b.jpg", "Do you even sift - http://i.imgur.com/k9qM7.jpg", "DYEL Chrysalis - http://i.imgur.com/9KvPg.png", "DYEL - http://i.imgur.com/YZ0l6.jpg", "Dost Thou Even Hoist - http://i.imgur.com/VGmJv.jpg", "DYEL Spongebob - http://i.imgur.com/TIUj2.jpg"];
-    function dyelResponse() { return dyel[Math.floor(Math.random() * dyel.length-1)+1]; }
-}
-{
-    var partyHard = ["Party Hard Derpy - http://i.imgur.com/hSkCg.gif", "Party Hard Chicken Pie - http://i.imgur.com/ccLcI.gif", "Party Hard Rarity - http://i.imgur.com/ajiF7.gif", "Party Hard Pinkie - http://i.imgur.com/VNiq6.gif", "Party Hard PinkiexDash - http://i.imgur.com/TszE8.gif", "Party Hard Twilight's Mom - http://i.imgur.com/piAhk.gif"];
-    function partyHardResponse() { return partyHard[Math.floor(Math.random() * partyHard.length-1)+1]; }
-}
-{
-    var badass = ["Internet Badass Fluttershy - http://i.imgur.com/EeoZP.png", "Internet Badass BonBon - http://i.imgur.com/jNIkG.png"];
-    function badassResponse() { return badass[Math.floor(Math.random() * badass.length-1)+1]; }
-}
-{
-    var what = ["What gamephysics - http://i.imgur.com/FlhE3.gif", "What Hank Hill - http://i.imgur.com/7nGyg.png", "What is this I don't even - http://i.imgur.com/M4WCQ.jpg", "Wat - http://i.imgur.com/zPAff.jpg", "Wat - http://i.imgur.com/nz6v8.jpg", "I'm a filly and what is this - http://i.imgur.com/0N3tT.jpg", "What the fuck - http://i.imgur.com/OEyaF.jpg", "Wat G3.5 - http://i.imgur.com/uWVCn.jpg", "LOL WUT - http://i.imgur.com/PH1c4.jpg"];
-    function whatResponse() { return what[Math.floor(Math.random() * what.length-1)+1]; }
-}
-{
-    var club = ["Club Can't Handle Me Twilight - http://i.imgur.com/y1gTN.gif", "Club Can't Handle Me Spike - http://i.imgur.com/xpgTS.gif", "Club Can't Handle Me Pinkie - http://i.imgur.com/Ri8FK.gif", "Club Can't Handle Me Spoodermon - http://i.imgur.com/EEYIJ.gif", "Club Can't Handle Me Apple.mov - http://i.imgur.com/hG10t.gif"];
-    function clubResponse() { return club[Math.floor(Math.random() * club.length-1)+1]; }
-}
-{
-    var fuckYou = ["Fuck Your Shit - http://i.imgur.com/pG5QJ.gif", "Get On My Level - http://i.imgur.com/uccdQ.gif", "Middle Finger Gif - http://i.imgur.com/NuAb8.gif", "Middle Finger Gif w/ my OC - http://i.imgur.com/skN9G.gif", "Middle Finger - http://i.imgur.com/3fTnd.jpg"];
-    function fuckYouResponse() { return fuckYou[Math.floor(Math.random() * fuckYou.length-1)+1]; }
-}
-{
-    var notaFuck = ["I almost gave a fuck - http://i.imgur.com/YsmbI.gif", "I don't give a shit - http://i.imgur.com/IWmKC.gif", "Who gives a shit - http://i.imgur.com/bOb1U.gif", "I don't give a fuck - http://i.imgur.com/4dOF8.gif", "Glass of I don't give a fuck - http://i.imgur.com/va0N5.jpg", "Who gives a fuck - http://i.imgur.com/hkpod.jpg"];
-    function notaFuckResponse() { return notaFuck[Math.floor(Math.random() * notaFuck.length-1)+1]; }
-}
 var customChatCommand = function(value) {
     if (Models.chat._chatCommand(value) === true)
         return true;
     if (value.indexOf("/commands") === 0) {
         appendToChat("User Commands", null, "#870DDC");
         appendToChat("/change - displays the changelog for this version", null, "#870DDC");
-        appendToChat("/links - prints commands for the sweetieBOT links", null, "#870DDC");
-        appendToChat("/deltab - Deletes the P.P userlist tab", null, "#870DDC");
         appendToChat("/nick - change username", null, "#870DDC");
         appendToChat("/avail - set status available", null, "#870DDC");
         appendToChat("/afk - set status afk", null, "#870DDC");
@@ -467,8 +437,7 @@ var customChatCommand = function(value) {
         appendToChat("/leave - leaves dj booth/waitlist", null, "#870DDC");
         appendToChat("/woot - woots current song", null, "#870DDC");
         appendToChat("/meh - mehs current song", null, "#870DDC");
-        appendToChat("/steam - prints the link to the steam group", null, "#870DDC");
-        appendToChat("/responses - prints the commands for chat responses", null, "#870DDC");
+        appendToChat("/emotes - prints the commands for chat responses", null, "#870DDC");
         appendToChat("/irc - gives the IRC info", null, "#870DDC");
         appendToChat("/hide - hides the video without muting the sound", null, "#870DDC");
         appendToChat("/ref - refreshes the video/soundcloud", null, "#870DDC");
@@ -476,10 +445,10 @@ var customChatCommand = function(value) {
         appendToChat("/alertson - turns user join/leave messages on", null, "#870DDC");
         appendToChat("/autofan - toggles fanning users when they join", null, "#870DDC");
         appendToChat("/getpos - get current waitlist position", null, "#870DDC");
-        appendToChat("/whois (username) - gives general information about user", null, "#870DDC");
         appendToChat("/version - displays version number", null, "#870DDC");
         if (Models.room.data.staff[API.getSelf().id] && Models.room.data.staff[API.getSelf().id] > 1) {
             appendToChat("Moderation Commands", null, "#FF0000");
+            appendToChat("/whois (username) - gives general information about user", null, "#870DDC");
             appendToChat("/skip - skip current song", null, "#FF0000");
             appendToChat("/kick (username) - kicks targeted user", null, "#FF0000");
             appendToChat("/add (username) - adds targeted user to dj booth/waitlist", null, "#FF0000");
@@ -496,52 +465,15 @@ var customChatCommand = function(value) {
         appendToChat("/boxofwats - provides a box of wats", null, "#66FFFF");
         appendToChat("/hitlerflip - you roleplay as hitler and flip a table...", null, "#66FFFF");
         appendToChat("/dyel - prints a link to a 'do you even lift' image macro", null, "#66FFFF");
-        appendToChat("/partyhard - prints a link to a 'party hard' image macro", null, "#66FFFF");
-        appendToChat("/badass - prints a link to an 'internet badass' image macro", null, "#66FFFF");
-        appendToChat("/what - prints a link to a 'wat' image macro", null, "#66FFFF");
-        appendToChat("/club - prints a link to a 'club can't handle me' image macro", null, "#66FFFF");
-        appendToChat("/fuckyou - prints a link to an image macro relating to dislike towards a person", null, "#66FFFF");
-        appendToChat("/notafuck - prints an image macro relating to not giving a fuck", null, "#66FFFF");
-        appendToChat("/fans - displays a sarcastic response to people who ask for fans", null, "#66FFFF");
-        return true;
-    }
-    if (value.indexOf("/links") === 0) {
-        appendToChat("/fb - link to the room's facebook group", null, "#DC631C");
-        appendToChat("/steam - link to the room's steam group",null, "#DC631C");
-        appendToChat("/weird - link to the weird day info", null, "#DC631C");
-        appendToChat("/minecraft - link to the minecraft server list", null, "#DC631C");
-        appendToChat("/faces - link to the faces of plug document", null, "#DC631C");
-        appendToChat("/download - download link to plug.pony", null, "#DC631C");
-        appendToChat("/rules - link to the room rules", null, "#DC631C");
-        return true;
+        appendToChat("/what - prints a link to a 'wat' image macro", null, "#66FFFF");      
     }
 //Response commands
-    if (value.indexOf("/partyhard") === 0) {
-        appendToChat(partyHardResponse(), null, "#00FF00");
-        return true;
-    }
-    if (value.indexOf("/badass") === 0) {
-        appendToChat(badassResponse(), null, "#00FF00");
-        return true;
-    }
     if (value.indexOf("/what") === 0) {
         appendToChat(whatResponse(), null, "#00FF00");
         return true;
     }
     if (value.indexOf("/dyel") === 0) {
         appendToChat(dyelResponse(), null, "#00FF00");
-        return true;
-    }
-    if (value.indexOf("/club") === 0) {
-        appendToChat(clubResponse(), null, "#00FF00");
-        return true;
-    }
-    if (value.indexOf("/fuckyou") === 0) {
-        appendToChat(fuckYouResponse(), null, "#00FF00");
-        return true;
-    }
-    if (value.indexOf("/notafuck") === 0) {
-        appendToChat(notaFuckResponse(), null, "#00FF00");
         return true;
     }
     if (value.indexOf("/wat") > -1) {
@@ -561,39 +493,6 @@ var customChatCommand = function(value) {
     }
     if (value.indexOf("/hitlerflip") > -1) {
         setTimeout(function() {API.sendChat("/me (ﾉಥ益ಥ）ﾉ﻿ ┻━┻ ")}, 100);
-    }
-    //Links
-    if (value.indexOf("/steam") === 0) {
-        mentionChat("", "Steam Group - http://goo.gl/4tzE8");
-        return true;
-    }
-    if (value.indexOf("/weird") === 0) {
-        mentionChat("", "Weird List - http://goo.gl/gxNcL");
-        return true;
-    }
-    if (value.indexOf("/minecraft") === 0) {
-        mentionChat("", "MC Server List - http://goo.gl/K9lVk");
-        return true;
-    }
-    if (value.indexOf("/download") === 0) {
-        mentionChat("", "Download Plug.Pony - http://goo.gl/i9gOY");
-        return true;
-    }
-    if (value.indexOf("/rules") === 0) {
-        mentionChat("", "Room Rules - http://goo.gl/fTrW0");
-        return true;
-    }
-    if (value.indexOf("/faces") === 0) {
-        mentionChat("", "Faces of Plug - http://goo.gl/6u63N")
-        return true;
-    }
-    if (value.indexOf("/fb") === 0) {
-        mentionchat("", "Facebook Group - http://goo.gl/Ljp23")
-        return true;
-    }
-    if (value.indexOf("/irc") === 0) {
-        mentionChat("IRC - irc.canternet.org #Plug.dj OR #Plug.dj2")
-        return true;
     }
     //Misc
     if (value.indexOf("/change") === 0) {
