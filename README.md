@@ -1,6 +1,6 @@
 Original https://github.com/ConnerGDavis/Plugbot
 
-My custom version of colgate/tat's plugbot
+Custom fork of colgate's version
 
 Added commands for /minecraft, /weird, /download, etc. due to sweetieBOT being gone
 
