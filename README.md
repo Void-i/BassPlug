@@ -1,4 +1,4 @@
-**BassPlug**
+**Generic version of BassPlug**
 
 *To install put this as a bookmark in your bookmarks bar and then click it while you are in plug*:
 
