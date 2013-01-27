@@ -9,7 +9,6 @@ BassPlug provides many additional features for plug.dj. Some of the features inc
 * Automated plug functions
     * Autowoot
     * Autoqueue
-    * Autofan
     * Automatic response for when you are AFK
 * Hide the video without muting the audio
 * Userlist
@@ -34,7 +33,6 @@ BassPlug provides many additional features for plug.dj. Some of the features inc
     * /boxofwats
 
 **Upcoming Features(in order of priority)**
-* Fixing autofan disable functionality
 * Nicer user interface
 * Large Video mode
 * More moderation functions
@@ -58,7 +56,6 @@ BassPlug provides many additional features for plug.dj. Some of the features inc
 * /ref - refreshes the video/soundcloud
 * /alertsoff - turns user join/leave messages off
 * /alertson - turns user join/leave messages on
-* /autofan - toggles fanning users when they join
 * /getpos - get current waitlist position
 * /whois (username) - gives general information about user
 * /version - displays version number
