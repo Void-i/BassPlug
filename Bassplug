@@ -39,7 +39,6 @@ var recent = false,
     afkdisable = false,
     menu = true,
     notify = true,
-    autofan = false,
     mehcount = 0;
 
 function initAPIListeners()
@@ -89,7 +88,6 @@ function displayUI() {    $('#plugbot-ui').remove();
             '<p id="plugbot-btn-hidevideo" style="color:#ED1C24">hide video</p>' +
             '<p id="plugbot-btn-userlist" style="color:#3FFF00">userlist</p>' +
             '<p id="plugbot-btn-autorespond" style="color:#ED1C24">afk status</p>' +
-            '<p id="plugbot-btn-autofan" style="color:#ED1C24">autofan</p>' +
             '</div>'
     );
 }
@@ -103,7 +101,6 @@ function initUIListeners()
         $("#plugbot-btn-hidevideo") .css("visibility", menu ? ("visible") : ("hidden"));
         $("#plugbot-btn-userlist") .css("visibility", menu ? ("visible") : ("hidden"));
         $("#plugbot-btn-autorespond").css("visibility", menu ? ("visible") : ("hidden"));
-        $("#plugbot-btn-autofan").css("visibility", menu ? ("visible") : ("hidden"));
     });
     $("#plugbot-btn-userlist").on("click", function() {
         userList = !userList;
@@ -140,19 +137,6 @@ function initUIListeners()
             awaymsg = prompt("Enter custom away message here. Should start with /me.","/me is away from keyboard.");
             Models.user.changeStatus("1");
             API.addEventListener(API.CHAT,chat);
-        }
-    });
-    $("#plugbot-btn-autofan").on("click", function() {
-        autofan = !autofan;
-        $(this).css("color", autofan ? "#3FFF00" : "#ED1C24");
-        if (autofan) {
-            API.addEventListener(API.DJ_ADVANCE, advance);
-            function advance(user) {
-                if (API.getSelf().id != API.getDJs()[0].id) new UserFanService("fan", API.getDJs()[0].id);
-            }
-        }
-        else {
-            API.removeEventListener(API.DJ_ADVANCE, advance);
         }
     });
 }
@@ -443,7 +427,6 @@ var customChatCommand = function(value) {
         appendToChat("/ref - refreshes the video/soundcloud", null, "#870DDC");
         appendToChat("/alertsoff - turns user join/leave messages off", null, "#870DDC");
         appendToChat("/alertson - turns user join/leave messages on", null, "#870DDC");
-        appendToChat("/autofan - toggles fanning users when they join", null, "#870DDC");
         appendToChat("/getpos - get current waitlist position", null, "#870DDC");
         appendToChat("/version - displays version number", null, "#870DDC");
         if (Models.room.data.staff[API.getSelf().id] && Models.room.data.staff[API.getSelf().id] > 1) {
@@ -502,17 +485,6 @@ var customChatCommand = function(value) {
     if (value.indexOf("/deltab") === 0) {
         var div = document.getElementById("pdpUsersToggle");
         div.parentNode.removeChild(div);
-        return true;
-    }
-    if (value.indexOf("/autofan") === 0) {
-        if (joinfan = false) {
-            appendToChat("Fanning users on join enabled", null, "#FFFF00");
-            joinfan = true;
-        }
-        else {
-            appendToChat("Fanning user on join disabled", null, "#FFFF00");
-            joinfan = false
-        }
         return true;
     }
     if (value.indexOf("/hide") === 0) {
