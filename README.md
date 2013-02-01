@@ -1,9 +1,6 @@
 **Generic version of BassPlug**
 
-*To install put this as a bookmark in your bookmarks bar and then click it while you are in plug*:
-
-    javascript: (function (){var jsCode = document.createElement('script'); jsCode.setAttribute('id', 'BassPlug.js'); jsCode.setAttribute('src', 'https://raw.github.com/derpthebass/BassPlug/master/Bassplug'); document.body.appendChild(jsCode); }());
-
+**DO NOT USE THIS SCRIPT**
 
 BassPlug provides many additional features for plug.dj. Some of the features include:
 * Automated plug functions
