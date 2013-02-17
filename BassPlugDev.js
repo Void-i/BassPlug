@@ -550,6 +550,17 @@ var customChatCommand = function(value) {
             return true;
         }
     }
+    if (/^.fans (.*)$/.exec(value)) {
+        if(!recentEmote){
+            setTimeout(function() {API.sendChat(RegExp.$1+" Have some fans http://i.imgur.com/XHyZS.jpg , http://i.imgur.com/4g3Ir.jpg , http://i.imgur.com/VSn0o.jpg")}, 50);
+            recentEmote = true;
+            setTimeout(function(){ recentEmote = false; },60000);
+            return true;
+        }else{
+            appendToChat("Wait until the emote timer is done!", null, "#C50000");
+            return true;
+        }
+    }
     if (/^.eyeroll (.*)$/.exec(value)) {
         if(!recentEmote){
         setTimeout(function(){API.sendChat(RegExp.$1+" ¬_¬")}, 50);
