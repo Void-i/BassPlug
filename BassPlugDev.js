@@ -90,6 +90,61 @@ function displayUI(data) {
 }
 function initUIListeners()
 {
+    $("#plugbot-btn-menu") .hover(function(){
+            $(this).css("background-color", "rgba(39, 39, 39, 0.83)");
+        },
+        function(){
+            $(this).css("background-color", "rgba(10, 10, 10, 0.83)");
+        });
+    $("#plugbot-btn-woot") .hover(function(){
+    $(this).css("background-color", "rgba(39, 39, 39, 0.83)");
+    },
+        function(){
+        $(this).css("background-color", "rgba(10, 10, 10, 0.83)");
+});
+    $("#plugbot-btn-queue") .hover(function(){
+            $(this).css("background-color", "rgba(39, 39, 39, 0.83)");
+        },
+        function(){
+            $(this).css("background-color", "rgba(10, 10, 10, 0.83)");
+        });
+    $("#plugbot-btn-hidevideo") .hover(function(){
+            $(this).css("background-color", "rgba(39, 39, 39, 0.83)");
+        },
+        function(){
+            $(this).css("background-color", "rgba(10, 10, 10, 0.83)");
+        });
+    $("#plugbot-btn-userlist") .hover(function(){
+            $(this).css("background-color", "rgba(39, 39, 39, 0.83)");
+        },
+        function(){
+            $(this).css("background-color", "rgba(10, 10, 10, 0.83)");
+        });
+    $("#plugbot-btn-autorespond") .hover(function(){
+            $(this).css("background-color", "rgba(39, 39, 39, 0.83)");
+        },
+        function(){
+            $(this).css("background-color", "rgba(10, 10, 10, 0.83)");
+        });
+    $("#plugbot-btn-animationoff") .hover(function(){
+            $(this).css("background-color", "rgba(39, 39, 39, 0.83)");
+        },
+        function(){
+            $(this).css("background-color", "rgba(10, 10, 10, 0.83)");
+        });
+    $("#plugbot-btn-stream") .hover(function(){
+            $(this).css("background-color", "rgba(39, 39, 39, 0.83)");
+        },
+        function(){
+            $(this).css("background-color", "rgba(10, 10, 10, 0.83)");
+        });
+    $("#plugbot-btn-alerts") .hover(function(){
+            $(this).css("background-color", "rgba(39, 39, 39, 0.83)");
+        },
+        function(){
+            $(this).css("background-color", "rgba(10, 10, 10, 0.83)");
+        });
+    
     $("#plugbot-btn-menu").on("click", function() {
         menu = !menu;
         $("#plugbot-btn-woot") .css("visibility", menu ? ("visible") : ("hidden"));
@@ -292,7 +347,7 @@ function appendUser(user)
     }
     var imagePrefix;
     switch (permission) {
-        case 0:  	// Normal user
+        case 0:		// Normal user
             imagePrefix = 'normal'
             break;
         case 1:		// Featured DJ
