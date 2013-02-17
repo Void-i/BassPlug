@@ -144,7 +144,7 @@ function initUIListeners()
         function(){
             $(this).css("background-color", "rgba(10, 10, 10, 0.83)");
         });
-    
+
     $("#plugbot-btn-menu").on("click", function() {
         menu = !menu;
         $("#plugbot-btn-woot") .css("visibility", menu ? ("visible") : ("hidden"));
@@ -562,7 +562,7 @@ var customChatCommand = function(value) {
     }
     if (/^.420 (.*)$/.exec(value)) {
         if(!recentEmote){
-            setTimeout(function(){API.sendChat(RegExp.$1+" ")}, 50);
+            setTimeout(function(){API.sendChat(RegExp.$1+" ≖‿≖")}, 50);
             recentEmote = true;
             setTimeout(function(){ recentEmote = false; },60000);
             return true;
@@ -639,7 +639,7 @@ var customChatCommand = function(value) {
         }
 		        if (value.indexOf("/420") === 0) {
             if(!recentEmote){
-            setTimeout(function(){API.sendChat("/me ")}, 50);
+            setTimeout(function(){API.sendChat("/me ≖‿≖")}, 50);
             recentEmote = true;
                 setTimeout(function(){ recentEmote = false; },60000);
                 return true;
