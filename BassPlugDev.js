@@ -1,4 +1,4 @@
-var version = "Running BassPlug version 2.0.0 <br>Type /change for the changes made.<br>Use '/cmd' to show all commands.";
+var version = "Running BassPlug version 2.0.0 <br>Type '/change' for the changes made.<br>Use '/cmd' to show all commands.";
 var changeLog = "Version 2.0.0 - Woo final release! | Made some huge changes to response/emotes | Autojoin is now disabled for bouncers+ | Added the ability to turn off audience animation | Added stream and alert buttons | Made the userlist change size automatically and scroll instead of making the page larger | Added a slightly different look to plug | Fixed a few bugs";
 appendToChat(version, null, "#58FAF4");
 
