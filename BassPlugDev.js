@@ -1,5 +1,5 @@
 var version = "Running BassPlug Dev Version 2.0.1 <br>Type '/change' for the changes made.<br>Use '/cmd' to show all commands.";
-var changeLog = "Dev Version 2.0.2 - Made the userlist 'fixed';
+var changeLog = "Dev Version 2.0.2 - Made the userlist 'fixed'";
 appendToChat(version, null, "#58FAF4");
 
 var recent = false,
