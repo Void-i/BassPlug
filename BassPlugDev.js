@@ -1,5 +1,5 @@
 var version = "Running BassPlug version 2.0.1 <br>Type '/change' for the changes made.<br>Use '/cmd' to show all commands.";
-var changeLog = "Dev version 2.0.2 - Made the userlist and menu 'fixed' | Moved the menu;
+var changeLog = "Dev version 2.0.2 - Made the userlist and menu 'fixed' | Moved the menu";
 appendToChat(version, null, "#58FAF4");
 
 var recent = false,
@@ -349,7 +349,7 @@ function appendUser(user)
     }
     var imagePrefix;
     switch (permission) {
-        case 0:		// Normal user
+        case 0:    	// Normal user
             imagePrefix = 'normal'
             break;
         case 1:		// Featured DJ
