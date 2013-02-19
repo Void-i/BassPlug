@@ -1,5 +1,5 @@
-var version = "Running BassPlug Dev Version 2.0.1 <br>Type '/change' for the changes made.<br>Use '/cmd' to show all commands.";
-var changeLog = "Dev Version 2.0.2 - Made the userlist 'fixed'";
+var version = "Running BassPlug Dev Version 2.0.3 <br>Type '/change' for the changes made.<br>Use '/cmd' to show all commands.";
+var changeLog = "Dev Version 2.0.3 - Fixed the userlist scroll bar not hiding";
 appendToChat(version, null, "#58FAF4");
 
 var recent = false,
@@ -162,6 +162,7 @@ function initUIListeners()
         userList = !userList;
         $(this).css("color", userList ? "#3FFF00" : "#ED1C24");
         $("#plugbot-userlist").css("visibility", userList ? ("visible") : ("hidden"));
+        $("#plugbot-userlist").css("overflow", userList ? ("auto") : ("hidden"));
         if (!userList)
             $("#plugbot-userlist").empty();
         else
