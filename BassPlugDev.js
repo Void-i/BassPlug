@@ -1,3 +1,4 @@
+// (ノಠ益ಠ)ノ彡
 var version = "Running BassPlug Dev Version 2.0.3 <br>Type '/change' for the changes made.<br>Use '/cmd' to show all commands.";
 var changeLog = "Dev Version 2.0.3 - Fixed the userlist scroll bar not hiding";
 appendToChat(version, null, "#58FAF4");
