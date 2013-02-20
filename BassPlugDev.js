@@ -1,5 +1,6 @@
-var version = "Running BassPlug Dev Version 2.0.4 <br>Type '/change' for the changes made.<br>Use '/cmd' to show all commands.";
-var changeLog = "Dev Version 2.0.4 - More userlist changes | Added a new emote";
+// (ノಠ益ಠ)ノ彡
+var version = "Running BassPlug Dev Version 2.0.3 <br>Type '/change' for the changes made.<br>Use '/cmd' to show all commands.";
+var changeLog = "Dev Version 2.0.3 - Fixed the userlist scroll bar not hiding";
 appendToChat(version, null, "#58FAF4");
 
 var recent = false,
@@ -353,7 +354,7 @@ function appendUser(user)
         case 0:        // Normal user
             imagePrefix = 'normal'
             break;
-        case 1:		// Featured DJ
+        case 1:    	// Featured DJ
             imagePrefix = 'featured';
             break;
         case 2:		// Bouncer
@@ -533,7 +534,6 @@ var customChatCommand = function(value) {
             "<strong>'/yuno'</strong> - <em>Y U NO USE THIS EMOTES!?</em><br>" +
             "<strong>'/fans'</strong> - <em>That random foreign guy keeps asking for fans again, help him out!</em><br>" +
             "<strong>'/cry'</strong> - <em>Dem feels</em><br>" +
-            "<strong>'/throw'</strong> - <em>You throw some unknown object out of the chat window</em><br>" +
             "<strong>Protip: </strong>Replace the slash in front of a command with a '.' and put a message after it to add the emote to the message!"
             , null, "#66FFFF");
         return true;
@@ -545,18 +545,7 @@ var customChatCommand = function(value) {
     }
     if (/^.wut (.*)$/.exec(value)) {
         if(!recentEmote){
-            setTimeout(function() {API.sendChat(RegExp.$1+" ಠ_ಠ")}, 50);
-            recentEmote = true;
-            setTimeout(function(){ recentEmote = false; },60000);
-            return true;
-        }else{
-            appendToChat("Wait until the emote timer is done!", null, "#C50000");
-            return true;
-        }
-    }
-    if (/^.throw(.*)$/.exec(value)) {
-        if(!recentEmote){
-            setTimeout(function() {API.sendChat(RegExp.$1+" (ノಠ益ಠ)ノ彡 ")}, 50);
+            setTimeout(function() {API.sendChat(RegExp.$1+"  ಠ_ಠ")}, 50);
             recentEmote = true;
             setTimeout(function(){ recentEmote = false; },60000);
             return true;
@@ -568,6 +557,17 @@ var customChatCommand = function(value) {
     if (/^.fans (.*)$/.exec(value)) {
         if(!recentEmote){
             setTimeout(function() {API.sendChat(RegExp.$1+" Have some fans http://i.imgur.com/XHyZS.jpg , http://i.imgur.com/4g3Ir.jpg , http://i.imgur.com/VSn0o.jpg")}, 50);
+            recentEmote = true;
+            setTimeout(function(){ recentEmote = false; },60000);
+            return true;
+        }else{
+            appendToChat("Wait until the emote timer is done!", null, "#C50000");
+            return true;
+        }
+    }
+        if (/^.throw(.*)$/.exec(value)) {
+        if(!recentEmote){
+            setTimeout(function() {API.sendChat(RegExp.$1+" (ノಠ益ಠ)ノ彡 ")}, 50);
             recentEmote = true;
             setTimeout(function(){ recentEmote = false; },60000);
             return true;
@@ -666,18 +666,7 @@ var customChatCommand = function(value) {
      }*/
     if (value.indexOf("/wut") === 0) {
         if(!recentEmote){
-            setTimeout(function(){API.sendChat("/me ಠ_ಠ ")}, 50);
-            recentEmote = true;
-            setTimeout(function(){ recentEmote = false; },60000);
-            return true;
-        }else{
-            appendToChat("Wait until the emote timer is done!", null, "#C50000");
-            return true;
-        }
-    }
-    if (value.indexOf("/throw") === 0) {
-        if(!recentEmote){
-            setTimeout(function(){API.sendChat("/me (ノಠ益ಠ)ノ彡 ")}, 50);
+            setTimeout(function(){API.sendChat("/me  ಠ_ಠ ")}, 50);
             recentEmote = true;
             setTimeout(function(){ recentEmote = false; },60000);
             return true;
@@ -1031,7 +1020,7 @@ function kick(data) {
         }
     }
 }
-History Check
+/*History Check*/
 Models.history.load();
 var skippedsongs = [];
 API.addEventListener(API.DJ_UPDATE, repeatcheck);
@@ -1170,8 +1159,8 @@ $('#plugbot-js').remove();
 $('body').prepend('<style type="text/css" id="plugbot-css">' +
     '#plugbot-ui { position: absolute; left: 325.9px; top: -601.78px;}' +
     '#plugbot-ui p { border-style: solid; border-width: 1px; border-color: #000; background-color: rgba(10, 10, 10, 0.83); height: 28px; padding-top: 13%; padding-left: 8%; padding-right: 8%; cursor: pointer; font-variant: small-caps; width: 62px; font-size: 13px; margin: 2.5%; }' +
-    '#plugbot-userlist {min-width: 8.4%; max-height: 96.96%; overflow-x: hidden; overflow-y: auto; position: fixed; z-index: 99; border-style: solid; border-width: 1px; border-color: #000; background-color: rgba(10, 10, 10, 0.83); border-left: 0 !important; padding: 8px 0px 20px 0px; position: absolute; }' +
-    '#plugbot-userlist p {padding-right: 10px; overflow: scroll; z-index: 100; margin: 0; padding-top: 2px; text-indent: 24px; font-size: 90%; }' +
+    '#plugbot-userlist {min-width: 8.4%; max-height: 96.96%; overflow-x: hidden; overflow-y: auto; position: fixed; z-index: 99; border-style: solid; border-width: 1px; border-color: #000; background-color: rgba(10, 10, 10, 0.83); border-left: 0 !important; padding: 8px 0px 20px 0px; max-width: 12.5%; position: absolute; }' +
+    '#plugbot-userlist p {padding-right: 10px; overflow: scroll; z-index: 100; margin: 0; padding-top: 2px; text-indent: 24px; font-size: 10px; }' +
     '#plugbot-userlist p:first-child { padding-top: 0px !important; }' +
     '#plugbot-queuespot { color: #58FAF4; text-align: left; font-size: 15px; margin-left: 8px }');
 for(index in API.getUsers()){if (API.getUsers()[index].mehcount==undefined){API.getUsers()[index].mehcount=0}}
@@ -1188,8 +1177,8 @@ $('body').prepend('<style type="text/css" id="plugbot-css">'
     + '#plugbot-ui { position: absolute; left: 325.9px; top: -601.78px;}'
     + '#plugbot-ui p { border-style: solid; border-width: 1px; border-color: #000; background-color: rgba(10, 10, 10, 0.83); height: 28px; padding-top: 13%; padding-left: 8%; padding-right: 8%; cursor: pointer; font-variant: small-caps; width: 62px; font-size: 13px; margin: 2.5%; }'
     + '#plugbot-ui h2 { border-style: solid; border-width:  1px; border-color: #000 ; height: 9000px; width: 156px; margin: 2.5%; color: #fff; font-size: 12px; font-variant: small-caps; padding: 8px 0 0 13px; }'
-    + '#plugbot-userlist {min-width: 8.4%; max-height: 96.96%; overflow-x: hidden; overflow-y: auto; position: fixed; z-index: 99; border-style: solid; border-width: 1px; border-color: #000; background-color: rgba(10, 10, 10, 0.83); border-left: 0 !important; padding: 8px 0px 20px 0px; }'
-    + '#plugbot-userlist p {padding-right: 10px; margin: 0; padding-top: 4px; text-indent: 24px; font-size: 90%; }'
+    + '#plugbot-userlist {min-width: 8.4%; max-height: 96.96%; overflow-x: hidden; overflow-y: auto; position: fixed; z-index: 99; border-style: solid; border-width: 1px; border-color: #000; background-color: rgba(10, 10, 10, 0.83); border-left: 0 !important; padding: 8px 0px 20px 0px; max-width: 12.5%; }'
+    + '#plugbot-userlist p {padding-right: 10px; margin: 0; padding-top: 4px; text-indent: 24px; font-size: 10px; }'
     + '#plugbot-userlist p:first-child { padding-top: 0px !important; }'
     + '#plugbot-queuespot { color: #58FAF4; text-align: left; font-size: 15px; margin-left: 8px }');
 
