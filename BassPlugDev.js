@@ -544,7 +544,7 @@ var customChatCommand = function(value) {
     }
     if (/^.wut (.*)$/.exec(value)) {
         if(!recentEmote){
-            setTimeout(function() {API.sendChat(RegExp.$1+" ಠ_ಠ")}, 50);
+            setTimeout(function() {API.sendChat(RegExp.$1+"  ಠ_ಠ")}, 50);
             recentEmote = true;
             setTimeout(function(){ recentEmote = false; },60000);
             return true;
@@ -654,7 +654,7 @@ var customChatCommand = function(value) {
      }*/
     if (value.indexOf("/wut") === 0) {
         if(!recentEmote){
-            setTimeout(function(){API.sendChat("/me ಠ_ಠ ")}, 50);
+            setTimeout(function(){API.sendChat("/me  ಠ_ಠ ")}, 50);
             recentEmote = true;
             setTimeout(function(){ recentEmote = false; },60000);
             return true;
