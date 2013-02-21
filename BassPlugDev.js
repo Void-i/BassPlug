@@ -1019,9 +1019,9 @@ ChatModel.chatCommand = customChatCommand;
 
 /*AFK Status*/
 function chat(data) {
-    if (data.type == "mention" && !recent) {
-        if (/^\/user\/ (.*)$/.exec(awaymsg)) {
-            setTimeout(function() {API.sendChat("@"+data.from+" "+RegExp.$1)}, 50);
+    if (data.type == "mention") {
+        if (/^\/user\/ (.*)$/.exec(awaymsg) && !recent) {
+            setTimeout(function() {API.sendChat("@"+data.from+" "+RegExp.$1)}, 500);
         }else{
             API.sendChat(awaymsg);
             recent = true;
