@@ -1025,7 +1025,9 @@ function chat(data) {
             recent = true;
             setTimeout(function() { recent = false; },180000);
         }
-}
+    }
+}    
+
 /*AutoJoin Disable/Enable*/
 function disable(data) {
     if (data.type == "mention" && Models.room.data.staff[data.fromID] && Models.room.data.staff[data.fromID] >= Models.user.BOUNCER && data.message.indexOf("!disable") > 0) {
