@@ -1019,15 +1019,15 @@ ChatModel.chatCommand = customChatCommand;
 
 /*AFK Status*/
 function chat(data) {
-    if (data.type == "mention") {
-        if (/^\/user\/ (.*)$/.exec(awaymsg) && !recent) {
+        if (data.type == "mention" && /^\/user\/ (.*)$/.exec(awaymsg) && !recent) {
             setTimeout(function() {API.sendChat("@"+data.from+" "+RegExp.$1)}, 500);
-        }else{
+        }else if(!recent && data.type == "mention"){
             API.sendChat(awaymsg);
             recent = true;
             setTimeout(function() { recent = false; },180000);
+        }else{
+            return false;
         }
-    }
 }
 /*AutoJoin Disable/Enable*/
 function disable(data) {
