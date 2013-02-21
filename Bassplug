@@ -1,5 +1,5 @@
-var version = "Running BassPlug version 2.0.1 <br>Type '/change' for the changes made.<br>Use '/cmd' to show all commands.";
-var changeLog = "Version 2.0.1 - Fixed the glitchy menu so it doesn't mash together if you have a different zoom level | Made a very small fix for userlist icons";
+var version = "Running BassPlug version 2.0.2 <br>Type '/change' for the changes made.<br>Use '/cmd' to show all commands.";
+var changeLog = "Version 2.0.2 - Added the new emote";
 appendToChat(version, null, "#58FAF4");
 
 var recent = false,
@@ -530,6 +530,7 @@ var customChatCommand = function(value) {
             "<strong>'/yuno'</strong> - <em>Y U NO USE THIS EMOTES!?</em><br>" +
             "<strong>'/fans'</strong> - <em>That random foreign guy keeps asking for fans again, help him out!</em><br>" +
             "<strong>'/cry'</strong> - <em>Dem feels</em><br>" +
+            "<strong>'/throw'</strong> - <em>You throw an unknown object out of the chat box</em><br>" +
             "<strong>Protip: </strong>Replace the slash in front of a command with a '.' and put a message after it to add the emote to the message!"
             , null, "#66FFFF");
         return true;
@@ -538,6 +539,17 @@ var customChatCommand = function(value) {
     if (value.indexOf("^") === 0) {
         API.sendChat("↑");
         return true;
+    }
+    if (value.indexOf("/throw") === 0) {
+        if(!recentEmote){
+            setTimeout(function(){API.sendChat("/me (ノಠ益ಠ)ノ彡")}, 50);
+            recentEmote = true;
+            setTimeout(function(){recentEmote = false;},60000);
+            return true;
+        }else{
+            appendToChat("Wait until the emote timer is done!", null, "#C50000");
+            return true;
+        }
     }
    if (/^.wut (.*)$/.exec(value)) {
         if(!recentEmote){
@@ -660,6 +672,17 @@ var customChatCommand = function(value) {
                 return true;
             }
         }
+    if (value.indexOf("/throw") === 0) {
+        if(!recentEmote){
+            setTimeout(function(){API.sendChat("/me (ノಠ益ಠ)ノ彡")}, 50);
+            recentEmote = true;
+            setTimeout(function(){recentEmote = false;},60000);
+            return true;
+        }else{
+            appendToChat("Wait until the emote timer is done!", null, "#C50000");
+            return true;
+        }
+    }
 		        if (value.indexOf("/420") === 0) {
             if(!recentEmote){
             setTimeout(function(){API.sendChat("/me ≖‿≖")}, 50);
