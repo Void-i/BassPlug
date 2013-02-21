@@ -1015,20 +1015,21 @@ var customChatCommand = function(value) {
 Models.chat._chatCommand = Models.chat.chatCommand;
 Models.chat.chatCommand = customChatCommand;
 ChatModel._chatCommand = ChatModel.chatCommand;
-ChatModel.chatCommand = customChatCommand;
 
 /*AFK Status*/
 function chat(data) {
-        if (data.type == "mention" && /^\/user\/ (.*)$/.exec(awaymsg)) {
-            if(!recent){
-            setTimeout(function() {API.sendChat("@"+data.from+" "+RegExp.$1)}, 500);
+    if (data.type == "mention" && !recent) {
+        if (/^\/user\/ (.*)$/.exec(awaymsg)) {
+            setTimeout(function() {API.sendChat("@"+data.from+" "+RegExp.$1)}, 50);
             recent = true;
-            setTimeout(function() { recent = false; },180000);
-            }else if(!recent && data.type == "mention" && awaymsg.indexOf("/user/") <= 0){
-                API.sendChat(awaymsg);
+            setTimeout(function(){recent=false;},180000);
+        }else if(!recent){
+            API.sendChat(awaymsg);
+        recent = true;
+        setTimeout(function() { recent = false; },180000);
         }
     }
-}    
+}
 
 /*AutoJoin Disable/Enable*/
 function disable(data) {
