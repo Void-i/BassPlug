@@ -1,5 +1,5 @@
-var version = "Running BassPlug Dev Version 2.0.4 <br>Type '/change' for the changes made.<br>Use '/cmd' to show all commands.";
-var changeLog = "Dev Version 2.0.4 - More userlist fixes | added a new emote";
+var version = "Running BassPlug Dev Version 2.0.5 <br>Type '/change' for the changes made.<br>Use '/cmd' to show all commands.";
+var changeLog = "Dev Version 2.0.5 - Fixed the new emote | Fixed and re-added the /curate command | Changed the ui opacity | Fixed the userlist again";
 appendToChat(version, null, "#58FAF4");
 
 var recent = false,
@@ -93,58 +93,58 @@ function displayUI(data) {
 function initUIListeners()
 {
     $("#plugbot-btn-menu") .hover(function(){
-            $(this).css("background-color", "rgba(39, 39, 39, 0.83)");
+            $(this).css("background-color", "rgba(39, 39, 39, 0.5)");
         },
         function(){
-            $(this).css("background-color", "rgba(10, 10, 10, 0.83)");
+            $(this).css("background-color", "rgba(10, 10, 10, 0.5)");
         });
     $("#plugbot-btn-woot") .hover(function(){
-            $(this).css("background-color", "rgba(39, 39, 39, 0.83)");
+            $(this).css("background-color", "rgba(39, 39, 39, 0.5)");
         },
         function(){
-            $(this).css("background-color", "rgba(10, 10, 10, 0.83)");
+            $(this).css("background-color", "rgba(10, 10, 10, 0.5)");
         });
     $("#plugbot-btn-queue") .hover(function(){
-            $(this).css("background-color", "rgba(39, 39, 39, 0.83)");
+            $(this).css("background-color", "rgba(39, 39, 39, 0.5)");
         },
         function(){
-            $(this).css("background-color", "rgba(10, 10, 10, 0.83)");
+            $(this).css("background-color", "rgba(10, 10, 10, 0.5)");
         });
     $("#plugbot-btn-hidevideo") .hover(function(){
-            $(this).css("background-color", "rgba(39, 39, 39, 0.83)");
+            $(this).css("background-color", "rgba(39, 39, 39, 0.5)");
         },
         function(){
-            $(this).css("background-color", "rgba(10, 10, 10, 0.83)");
+            $(this).css("background-color", "rgba(10, 10, 10, 0.5)");
         });
     $("#plugbot-btn-userlist") .hover(function(){
-            $(this).css("background-color", "rgba(39, 39, 39, 0.83)");
+            $(this).css("background-color", "rgba(39, 39, 39, 0.5)");
         },
         function(){
-            $(this).css("background-color", "rgba(10, 10, 10, 0.83)");
+            $(this).css("background-color", "rgba(10, 10, 10, 0.5)");
         });
     $("#plugbot-btn-autorespond") .hover(function(){
-            $(this).css("background-color", "rgba(39, 39, 39, 0.83)");
+            $(this).css("background-color", "rgba(39, 39, 39, 0.5)");
         },
         function(){
-            $(this).css("background-color", "rgba(10, 10, 10, 0.83)");
+            $(this).css("background-color", "rgba(10, 10, 10, 0.5)");
         });
     $("#plugbot-btn-animationoff") .hover(function(){
-            $(this).css("background-color", "rgba(39, 39, 39, 0.83)");
+            $(this).css("background-color", "rgba(39, 39, 39, 0.5)");
         },
         function(){
-            $(this).css("background-color", "rgba(10, 10, 10, 0.83)");
+            $(this).css("background-color", "rgba(10, 10, 10, 0.5)");
         });
     $("#plugbot-btn-stream") .hover(function(){
-            $(this).css("background-color", "rgba(39, 39, 39, 0.83)");
+            $(this).css("background-color", "rgba(39, 39, 39, 0.5)");
         },
         function(){
-            $(this).css("background-color", "rgba(10, 10, 10, 0.83)");
+            $(this).css("background-color", "rgba(10, 10, 10, 0.5)");
         });
     $("#plugbot-btn-alerts") .hover(function(){
-            $(this).css("background-color", "rgba(39, 39, 39, 0.83)");
+            $(this).css("background-color", "rgba(39, 39, 39, 0.5)");
         },
         function(){
-            $(this).css("background-color", "rgba(10, 10, 10, 0.83)");
+            $(this).css("background-color", "rgba(10, 10, 10, 0.5)");
         });
 
     $("#plugbot-btn-menu").on("click", function() {
@@ -353,7 +353,7 @@ function appendUser(user)
         case 0:        // Normal user
             imagePrefix = 'normal'
             break;
-        case 1:    	// Featured DJ
+        case 1:        // Featured DJ
             imagePrefix = 'featured';
             break;
         case 2:		// Bouncer
@@ -384,11 +384,11 @@ function appendUser(user)
 }
 function colorByVote(vote) {
     if (!vote)	{
-        return '#fff'; // blame Boycey
+        return '#DDDDDD'; // blame Boycey
     }
     switch (vote) {
         case -1: 	return '#F43636';
-        case 0:		return '#FFFFF';
+        case 0:		return '#DDDDDD';
         case 1:		return '#95F436';
     }
 }
@@ -506,6 +506,7 @@ var customChatCommand = function(value) {
             "<strong>'/leave'</strong> - <em>leaves dj booth/waitlist</em><br>" +
             "<strong>'/woot'</strong> - <em>woots current song</em><br>" +
             "<strong>'/meh'</strong> - <em>mehs current song</em><br>" +
+            "<strong>'/curate'</strong> - <em>adds the current song to your active playlist</em><br>" +
             "<strong>'/emotes'</strong> - <em>prints the commands for chat responses</em><br>" +
             "<strong>'/hide'</strong> - <em>hides the video without muting the sound</em><br>" +
             "<strong>'/ref'</strong> - <em>refreshes the video/soundcloud</em><br>" +
@@ -521,6 +522,11 @@ var customChatCommand = function(value) {
                 "<strong>'/remove (username)'</strong> - <em>removes targeted user from dj booth/waitlist</em><br>" +
                 "<strong>'/whois (username)'</strong> - <em>gives general information about user</em><br>" +
                 "<strong>'/history'</strong> - <em>skips the current song and announces that it was in the history</em><br>", null, "#FF0000");
+            if(Models.room.data.staff[API.getSelf().id] && Models.room.data.staff[API.getSelf().id] > 2) {
+                appendToChat("<strong>'/lock'</strong> - <em>locks the DJ booth</em><br>" +
+                "<strong>'/unlock'</strong> - <em>unlocks the DJ booth</em><br>"
+                    , null, "#FF0000");
+            }
         }
         return true;
     }
@@ -533,6 +539,7 @@ var customChatCommand = function(value) {
             "<strong>'/yuno'</strong> - <em>Y U NO USE THIS EMOTES!?</em><br>" +
             "<strong>'/fans'</strong> - <em>That random foreign guy keeps asking for fans again, help him out!</em><br>" +
             "<strong>'/cry'</strong> - <em>Dem feels</em><br>" +
+            "<strong>'/throw'</strong> - <em>You thow an unkown object out of the chatbox</em>" +
             "<strong>Protip: </strong>Replace the slash in front of a command with a '.' and put a message after it to add the emote to the message!"
             , null, "#66FFFF");
         return true;
@@ -564,7 +571,7 @@ var customChatCommand = function(value) {
             return true;
         }
     }
-        if (/^.throw(.*)$/.exec(value)) {
+    if (/^.throw(.*)$/.exec(value)) {
         if(!recentEmote){
             setTimeout(function() {API.sendChat(RegExp.$1+" (ノಠ益ಠ)ノ彡 ")}, 50);
             recentEmote = true;
@@ -618,18 +625,7 @@ var customChatCommand = function(value) {
             appendToChat("Wait until the emote timer is done!", null, "#C50000");
             return true;
         }
-    }
-    /*if (/^.flip (.*)$/.exec(value)) {
-     if(!recentEmote){
-     setTimeout(function(){API.sendChat("(╯°□°）╯︵ ┻━┻ "+ RegExp.$1)}, 50);
-     recentEmote = true;
-     setTimeout(function(){ recentEmote = false; },60000);
-     return true;
-     }else{
-     appendToChat("Wait until the emote timer is done!", null, "#C50000");
-     return true;
      }
-     }*/
     if (/^.boxofwats (.*)$/.exec(value)) {
         if(!recentEmote){
             setTimeout(function(){API.sendChat(RegExp.$1+" (>-_-)>[wats]")}, 50);
@@ -641,28 +637,19 @@ var customChatCommand = function(value) {
             return true;
         }
     }
-    /*    if (/^.replace (.*)$/.exec(value)) {
-     if(!recentEmote){
-     setTimeout(function () {API.sendChat("┬─┬ノ( º _ ºノ) "+ RegExp.$1)}, 50);
-     recentEmote = true;
-     setTimeout(function(){ recentEmote = false; },60000);
-     return true;
-     }else{
-     appendToChat("Wait until the emote timer is done!", null, "#C50000");
-     return true;
-     }
-     }
-     if (/^.hitlerflip (.*)$/.exec(value)) {
-     if(!recentEmote){
-     setTimeout(function() {API.sendChat("(ﾉಥ益ಥ）ﾉ﻿ ┻━┻ "+ RegExp.$1)}, 50);
-     recentEmote = true;
-     setTimeout(function(){ recentEmote = false; },60000);
-     return true;
-     }else{
-     appendToChat("Wait until the emote timer is done!", null, "#C50000");
-     return true;
-     }
-     }*/
+
+    /******************************************************************************************/
+    if (value.indexOf("/throw") === 0) {
+        if(!recentEmote){
+            setTimeout(function(){API.sendChat("/me (ノಠ益ಠ)ノ彡")}, 50);
+            recentEmote = true;
+            setTimeout(function(){recentEmote = false;},60000);
+            return true;
+        }else{
+            appendToChat("Wait until the emote timer is done!", null, "#C50000");
+            return true;
+        }
+    }
     if (value.indexOf("/wut") === 0) {
         if(!recentEmote){
             setTimeout(function(){API.sendChat("/me  ಠ_ಠ ")}, 50);
@@ -696,17 +683,6 @@ var customChatCommand = function(value) {
             return true;
         }
     }
-    /*        if (value.indexOf("/flip") === 0) {
-     if(!recentEmote){
-     setTimeout(function(){API.sendChat("/me (╯°□°）╯︵ ┻━┻ ")}, 50);
-     recentEmote = true;
-     setTimeout(function(){ recentEmote = false; },60000);
-     return true;
-     }else{
-     appendToChat("Wait until the emote timer is done!", null, "#C50000");
-     return true;
-     }
-     }*/
     if (value.indexOf("/boxofwats") === 0) {
         if(!recentEmote){
             setTimeout(function(){API.sendChat("/me (>-_-)>[wats]")}, 50);
@@ -740,28 +716,6 @@ var customChatCommand = function(value) {
             return true;
         }
     }
-    /*        if (value.indexOf("/replace") === 0) {
-     if(!recentEmote){
-     setTimeout(function () {API.sendChat("/me ┬─┬ノ( º _ ºノ)")}, 50);
-     recentEmote = true;
-     setTimeout(function(){ recentEmote = false; },60000);
-     return true;
-     }else{
-     appendToChat("Wait until the emote timer is done!", null, "#C50000");
-     return true;
-     }
-     }
-     if (value.indexOf("/hitlerflip") === 0) {
-     if(!recentEmote){
-     setTimeout(function() {API.sendChat("/me (ﾉಥ益ಥ）ﾉ﻿ ┻━┻ ")}, 50);
-     recentEmote = true;
-     setTimeout(function(){ recentEmote = false; },60000);
-     return true;
-     }else{
-     appendToChat("Wait until the emote timer is done!", null, "#C50000");
-     return true;
-     }
-     }*/
     //Moderation
     if (value.indexOf("/strobe") === 0) {
         if(lights){
@@ -822,11 +776,6 @@ var customChatCommand = function(value) {
             return true;
         }
     }
-    /*    if (/^\/afkkick (.*)$/.exec(value)) {
-     target = RegExp.$1;
-     afkkick();
-     return true;
-     }*/
     if (/^\/remove (.*)$/.exec(value)) {
         if (Models.room.data.staff[API.getSelf().id] > 1){
             target = RegExp.$1;
@@ -875,8 +824,97 @@ var customChatCommand = function(value) {
             return true;
         }
     }
-    //Misc
+    //Archive
+    /*
+     if (/^.replace (.*)$/.exec(value)) {
+     if(!recentEmote){
+     setTimeout(function () {API.sendChat("┬─┬ノ( º _ ºノ) "+ RegExp.$1)}, 50);
+     recentEmote = true;
+     setTimeout(function(){ recentEmote = false; },60000);
+     return true;
+     }else{
+     appendToChat("Wait until the emote timer is done!", null, "#C50000");
+     return true;
+     }
+     }
 
+     if (/^.hitlerflip (.*)$/.exec(value)) {
+     if(!recentEmote){
+     setTimeout(function() {API.sendChat("(ﾉಥ益ಥ）ﾉ﻿ ┻━┻ "+ RegExp.$1)}, 50);
+     recentEmote = true;
+     setTimeout(function(){ recentEmote = false; },60000);
+     return true;
+     }else{
+     appendToChat("Wait until the emote timer is done!", null, "#C50000");
+     return true;
+     }
+
+     if (/^\/afkkick (.*)$/.exec(value)) {
+     target = RegExp.$1;
+     afkkick();
+     return true;
+     }
+
+     if (value.indexOf("/replace") === 0) {
+     if(!recentEmote){
+     setTimeout(function () {API.sendChat("/me ┬─┬ノ( º _ ºノ)")}, 50);
+     recentEmote = true;
+     setTimeout(function(){ recentEmote = false; },60000);
+     return true;
+     }else{
+     appendToChat("Wait until the emote timer is done!", null, "#C50000");
+     return true;
+     }
+     }
+
+     if (value.indexOf("/hitlerflip") === 0) {
+     if(!recentEmote){
+     setTimeout(function() {API.sendChat("/me (ﾉಥ益ಥ）ﾉ﻿ ┻━┻ ")}, 50);
+     recentEmote = true;
+     setTimeout(function(){ recentEmote = false; },60000);
+     return true;
+     }else{
+     appendToChat("Wait until the emote timer is done!", null, "#C50000");
+     return true;
+     }
+     }
+
+     if (value.indexOf("/flip") === 0) {
+     if(!recentEmote){
+     setTimeout(function(){API.sendChat("/me (╯°□°）╯︵ ┻━┻ ")}, 50);
+     recentEmote = true;
+     setTimeout(function(){ recentEmote = false; },60000);
+     return true;
+     }else{
+     appendToChat("Wait until the emote timer is done!", null, "#C50000");
+     return true;
+     }
+     }
+
+     if (/^.flip (.*)$/.exec(value)) {
+     if(!recentEmote){
+     setTimeout(function(){API.sendChat("(╯°□°）╯︵ ┻━┻ "+ RegExp.$1)}, 50);
+     recentEmote = true;
+     setTimeout(function(){ recentEmote = false; },60000);
+     return true;
+     }else{
+     appendToChat("Wait until the emote timer is done!", null, "#C50000");
+     return true;
+     }
+     }
+
+     if (/^.flip (.*)$/.exec(value)) {
+     if(!recentEmote){
+     setTimeout(function(){API.sendChat("(╯°□°）╯︵ ┻━┻ "+ RegExp.$1)}, 50);
+     recentEmote = true;
+     setTimeout(function(){ recentEmote = false; },60000);
+     return true;
+     }else{
+     appendToChat("Wait until the emote timer is done!", null, "#C50000");
+     return true;
+     }
+     }*/
+    //Misc
     if (value.indexOf("/change") === 0) {
         appendToChat(changeLog, null, "#BAFFAB");
         return true;
@@ -942,10 +980,10 @@ var customChatCommand = function(value) {
         Models.user.changeDisplayName(RegExp.$1);
         return true;
     }
-    var playlistID = Models.playlist.selectedPlaylistID
+    var playlistID = Models.playlist.getSelected().id
     if (value.indexOf("/curate") === 0) {
-        new DJCurateService("playlistID");
-        setTimeout(function(){Dialog.closeDialog();},500);
+        new DJCurateService(playlistID);
+        setTimeout(function(){Dialog.closeDialog();}, 1000);
         return true;
     }
     if (value.indexOf("/alertsoff") === 0)
@@ -1157,9 +1195,9 @@ $('#plugbot-css').remove();
 $('#plugbot-js').remove();
 $('body').prepend('<style type="text/css" id="plugbot-css">' +
     '#plugbot-ui { position: absolute; left: 325.9px; top: -601.78px;}' +
-    '#plugbot-ui p { border-style: solid; border-width: 1px; border-color: #000; background-color: rgba(10, 10, 10, 0.83); height: 28px; padding-top: 13%; padding-left: 8%; padding-right: 8%; cursor: pointer; font-variant: small-caps; width: 62px; font-size: 13px; margin: 2.5%; }' +
-    '#plugbot-userlist {min-width: 8.4%; max-height: 96.96%; overflow-x: hidden; overflow-y: auto; position: fixed; z-index: 99; border-style: solid; border-width: 1px; border-color: #000; background-color: rgba(10, 10, 10, 0.83); border-left: 0 !important; padding: 8px 0px 20px 0px; position: absolute; }' +
-    '#plugbot-userlist p {padding-right: 10px; overflow: scroll; z-index: 100; margin: 0; padding-top: 2px; text-indent: 24px; font-size: 90%; }' +
+    '#plugbot-ui p { border-style: solid; border-width: 1px; border-color: #000; background-color: rgba(10, 10, 10, 0.5); height: 28px; padding-top: 13%; padding-left: 8%; padding-right: 8%; cursor: pointer; font-variant: small-caps; width: 62px; font-size: 13px; margin: 2.5%; }' +
+    '#plugbot-userlist {min-width: 8.4%; max-height: 96.96%; overflow-x: hidden; overflow-y: auto; position: fixed; z-index: 99; border-style: solid; border-width: 1px; border-color: #000; background-color: rgba(10, 10, 10, 0.5); border-left: 0 !important; padding: 0px 0px 8px 0px; position: absolute; }' +
+    '#plugbot-userlist p {padding-right: 10px; overflow: scroll; z-index: 100; margin: 0; padding-top: 2px; text-indent: 24px; font-size: 86%; color: #C3C3C3; }' +
     '#plugbot-userlist p:first-child { padding-top: 0px !important; }' +
     '#plugbot-queuespot { color: #58FAF4; text-align: left; font-size: 15px; margin-left: 8px }');
 for(index in API.getUsers()){if (API.getUsers()[index].mehcount==undefined){API.getUsers()[index].mehcount=0}}
@@ -1174,10 +1212,10 @@ $('#plugbot-js').remove();
 
 $('body').prepend('<style type="text/css" id="plugbot-css">'
     + '#plugbot-ui { position: absolute; left: 325.9px; top: -601.78px;}'
-    + '#plugbot-ui p { border-style: solid; border-width: 1px; border-color: #000; background-color: rgba(10, 10, 10, 0.83); height: 28px; padding-top: 13%; padding-left: 8%; padding-right: 8%; cursor: pointer; font-variant: small-caps; width: 62px; font-size: 13px; margin: 2.5%; }'
+    + '#plugbot-ui p { border-style: solid; border-width: 1px; border-color: #000; background-color: rgba(10, 10, 10, 0.5); height: 28px; padding-top: 13%; padding-left: 8%; padding-right: 8%; cursor: pointer; font-variant: small-caps; width: 62px; font-size: 13px; margin: 2.5%; }'
     + '#plugbot-ui h2 { border-style: solid; border-width:  1px; border-color: #000 ; height: 9000px; width: 156px; margin: 2.5%; color: #fff; font-size: 12px; font-variant: small-caps; padding: 8px 0 0 13px; }'
-    + '#plugbot-userlist {min-width: 8.4%; max-height: 96.96%; overflow-x: hidden; overflow-y: auto; position: fixed; z-index: 99; border-style: solid; border-width: 1px; border-color: #000; background-color: rgba(10, 10, 10, 0.83); border-left: 0 !important; padding: 8px 0px 20px 0px; }'
-    + '#plugbot-userlist p {padding-right: 10px; margin: 0; padding-top: 4px; text-indent: 24px; font-size: 90%; }'
+    + '#plugbot-userlist {min-width: 8.4%; max-height: 96.96%; overflow-x: hidden; overflow-y: auto; position: fixed; z-index: 99; border-style: solid; border-width: 1px; border-color: #000; background-color: rgba(10, 10, 10, 0.5); border-left: 0 !important; padding: 0px 0px 8px 0px; }'
+    + '#plugbot-userlist p {padding-right: 10px; margin: 0; padding-top: 4px; text-indent: 24px; font-size: 86%; color: #C3C3C3; }'
     + '#plugbot-userlist p:first-child { padding-top: 0px !important; }'
     + '#plugbot-queuespot { color: #58FAF4; text-align: left; font-size: 15px; margin-left: 8px }');
 
