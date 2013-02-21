@@ -1024,6 +1024,9 @@ function chat(data) {
             setTimeout(function() {API.sendChat("@"+data.from+" "+RegExp.$1)}, 500);
             recent = true;
             setTimeout(function() { recent = false; },180000);
+            else if(!recent && data.type == "mention" && awaymsg.indexOf("/user/") <= 0){
+                API.sendChat(awaymsg);
+            }
         }
     }
 }    
