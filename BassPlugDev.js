@@ -1198,7 +1198,7 @@ $('#plugbot-js').remove();
 $('body').prepend('<style type="text/css" id="plugbot-css">' +
     '#plugbot-ui { position: absolute; left: 325.9px; top: -601.78px;}' +
     '#plugbot-ui p { border-style: solid; border-width: 1px; border-color: #000; background-color: rgba(10, 10, 10, 0.5); height: 28px; padding-top: 13%; padding-left: 8%; padding-right: 8%; cursor: pointer; font-variant: small-caps; width: 62px; font-size: 13px; margin: 2.5%; }' +
-    '#plugbot-userlist {min-width: 8.4%; max-height: 96.96%; overflow-x: hidden; overflow-y: auto; position: fixed; z-index: 99; border-style: solid; border-width: 1px; border-color: #000; background-color: rgba(10, 10, 10, 0.5); border-left: 0 !important; padding: 0px 0px 8px 0px; position: absolute; }' +
+    '#plugbot-userlist {min-width: 8.4%; max-height: 96.96%; overflow-x: hidden; overflow-y: auto; position: fixed; z-index: 99; border-style: solid; border-width: 1px; border-color: #000; background-color: rgba(10, 10, 10, 0.5); border-left: 0 !important; padding: 0px 0px 12px 0px; position: absolute; }' +
     '#plugbot-userlist p {padding-right: 10px; overflow: scroll; z-index: 100; margin: 0; padding-top: 2px; text-indent: 24px; font-size: 86%; color: #C3C3C3; }' +
     '#plugbot-userlist p:first-child { padding-top: 0px !important; }' +
     '#plugbot-queuespot { color: #58FAF4; text-align: left; font-size: 15px; margin-left: 8px }');
@@ -1216,7 +1216,7 @@ $('body').prepend('<style type="text/css" id="plugbot-css">'
     + '#plugbot-ui { position: absolute; left: 325.9px; top: -601.78px;}'
     + '#plugbot-ui p { border-style: solid; border-width: 1px; border-color: #000; background-color: rgba(10, 10, 10, 0.5); height: 28px; padding-top: 13%; padding-left: 8%; padding-right: 8%; cursor: pointer; font-variant: small-caps; width: 62px; font-size: 13px; margin: 2.5%; }'
     + '#plugbot-ui h2 { border-style: solid; border-width:  1px; border-color: #000 ; height: 9000px; width: 156px; margin: 2.5%; color: #fff; font-size: 12px; font-variant: small-caps; padding: 8px 0 0 13px; }'
-    + '#plugbot-userlist {min-width: 8.4%; max-height: 96.96%; overflow-x: hidden; overflow-y: auto; position: fixed; z-index: 99; border-style: solid; border-width: 1px; border-color: #000; background-color: rgba(10, 10, 10, 0.5); border-left: 0 !important; padding: 0px 0px 8px 0px; }'
+    + '#plugbot-userlist {min-width: 8.4%; max-height: 96.96%; overflow-x: hidden; overflow-y: auto; position: fixed; z-index: 99; border-style: solid; border-width: 1px; border-color: #000; background-color: rgba(10, 10, 10, 0.5); border-left: 0 !important; padding: 0px 0px 12px 0px; }'
     + '#plugbot-userlist p {padding-right: 10px; margin: 0; padding-top: 4px; text-indent: 24px; font-size: 86%; color: #C3C3C3; }'
     + '#plugbot-userlist p:first-child { padding-top: 0px !important; }'
     + '#plugbot-queuespot { color: #58FAF4; text-align: left; font-size: 15px; margin-left: 8px }');
