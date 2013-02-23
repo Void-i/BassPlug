@@ -55,12 +55,12 @@ function initAPIListeners()
             populateUserlist();
     });
     API.addEventListener(API.DJ_ADVANCE, function(){
-       if(strobe){
-           strobe = false;
-       } 
-       if(lights){
-           lights = false;
-       }
+        if(strobe){
+            strobe = false;
+        }
+        if(lights){
+            lights = false;
+        }
     });
     API.addEventListener(API.CHAT, disable);
 }
@@ -312,43 +312,7 @@ function populateUserlist()
         appendUser(user);
     }
 }
-{
-    API.addEventListener(API.USER_SKIP, skip)
-    API.addEventListener(API.USER_JOIN, join)
-    API.addEventListener(API.USER_LEAVE, leave)
-    API.addEventListener(API.VOTE_UPDATE, vote)
-    API.addEventListener(API.VOTE_SKIP, voteskip)
-    API.addEventListener(API.MOD_SKIP, modskip)
-    API.addEventListener(API.DJ_ADVANCE, advance)
-    function modskip(data)
-    {
-        populateUserlist()
-    }
-    function voteskip(data)
-    {
-        populateUserlist()
-    }
-    function advance(data)
-    {
-        populateUserlist()
-    }
-    function vote(data)
-    {
-        populateUserlist()
-    }
-    function leave(data)
-    {
-        populateUserlist()
-    }
-    function join(data)
-    {
-        populateUserlist()
-    }
-    function skip(data)
-    {
-        populateUserlist()
-    }
-}
+
 function appendUser(user)
 {
     var username = user.username;
@@ -364,7 +328,7 @@ function appendUser(user)
         case 1:        // Featured DJ
             imagePrefix = 'featured';
             break;
-        case 2:		// Bouncer
+        case 2:    	// Bouncer
             imagePrefix = 'bouncer';
             break;
         case 3:		// Manager
@@ -532,7 +496,7 @@ var customChatCommand = function(value) {
                 "<strong>'/history'</strong> - <em>skips the current song and announces that it was in the history</em><br>", null, "#FF0000");
             if(Models.room.data.staff[API.getSelf().id] && Models.room.data.staff[API.getSelf().id] > 2) {
                 appendToChat("<strong>'/lock'</strong> - <em>locks the DJ booth</em><br>" +
-                "<strong>'/unlock'</strong> - <em>unlocks the DJ booth</em><br>"
+                    "<strong>'/unlock'</strong> - <em>unlocks the DJ booth</em><br>"
                     , null, "#FF0000");
             }
         }
@@ -633,7 +597,7 @@ var customChatCommand = function(value) {
             appendToChat("Wait until the emote timer is done!", null, "#C50000");
             return true;
         }
-     }
+    }
     if (/^.boxofwats (.*)$/.exec(value)) {
         if(!recentEmote){
             setTimeout(function(){API.sendChat(RegExp.$1+" (>-_-)>[wats]")}, 50);
@@ -1003,8 +967,8 @@ function chat(data) {
             setTimeout(function(){recent=false;},180000);
         }else if(!recent){
             API.sendChat(awaymsg);
-        recent = true;
-        setTimeout(function() { recent = false; },180000);
+            recent = true;
+            setTimeout(function() { recent = false; },180000);
         }
     }
 }
