@@ -54,6 +54,14 @@ function initAPIListeners()
         if (userList)
             populateUserlist();
     });
+    API.addEventListener(API.DJ_ADVANCE, function(){
+       if(strobe){
+           strobe = false;
+       } 
+       if(lights){
+           lights = false;
+       }
+    });
     API.addEventListener(API.CHAT, disable);
 }
 
