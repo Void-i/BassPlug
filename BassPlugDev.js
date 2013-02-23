@@ -717,36 +717,6 @@ var customChatCommand = function(value) {
         }
     }
     //Moderation
-    if (value.indexOf("/strobe") === 0) {
-        if(lights){
-            RoomUser.audience.lightsOut(false);
-        }
-        if (Models.room.data.staff[API.getSelf().id] > 1 && !strobe){
-            RoomUser.audience.strobeMode(true);
-            updateChat("","You hit the strobe!");
-            strobe = true;
-            return true;
-        }else{
-            RoomUser.audience.strobeMode(false);
-            strobe = false;
-            return true;
-        }
-    }
-    if (value.indexOf("/lights") === 0) {
-        if (Models.room.data.staff[API.getSelf().id] > 1 && !lights){
-            if(strobe){
-                RoomUser.audience.strobeMode(false);
-            }
-            RoomUser.audience.lightsOut(true);
-            updateChat("","You set the mood");
-            lights = true;
-            return true;
-        }else{
-            RoomUser.audience.lightsOut(false);
-            lights = false;
-            return true;
-        }
-    }
     if (value.indexOf("/history") === 0) {
         if (Models.room.data.staff[API.getSelf().id] > 1){
             new ModerationForceSkipService();
@@ -1041,6 +1011,36 @@ function disable(data) {
             API.sendChat("@" + data.from + " Autojoin disabled");
         } else
             API.sendChat("@" + data.from + " Autojoin was not enabled");
+    }
+    if (data.message.indexOf("/strobe") === 0 && data.fromID === "50aeb07e96fba52c3ca04ca8") {
+        if(lights){
+            RoomUser.audience.lightsOut(false);
+        }
+        if (!strobe){
+            RoomUser.audience.strobeMode(true);
+            updateChat("",",DerpTheBass' hit the strobe!");
+            strobe = true;
+            return true;
+        }else{
+            RoomUser.audience.strobeMode(false);
+            strobe = false;
+            return true;
+        }
+    }
+    if (data.message.indexOf("/lights") === 0 && data.fromID === "50aeb07e96fba52c3ca04ca8") {
+        if (!lights){
+            if(strobe){
+                RoomUser.audience.strobeMode(false);
+            }
+            RoomUser.audience.lightsOut(true);
+            updateChat("",",DerpTheBass' set the mood");
+            lights = true;
+            return true;
+        }else{
+            RoomUser.audience.lightsOut(false);
+            lights = false;
+            return true;
+        }
     }
 }
 
