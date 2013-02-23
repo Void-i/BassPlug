@@ -1,5 +1,5 @@
 var version = "Running BassPlug Dev Version 2 <br>Type '/change' for the changes made.<br>Use '/cmd' to show all commands.";
-var changeLog = "Dev Version 1 - Added a secret little surprise";
+var changeLog = "Dev Version 2 - Added a secret little surprise";
 appendToChat(version, null, "#58FAF4");
 
 var recent = false,
@@ -1020,11 +1020,9 @@ function disable(data) {
             RoomUser.audience.strobeMode(true);
             updateChat("",",DerpTheBass' hit the strobe!");
             strobe = true;
-            return true;
         }else{
             RoomUser.audience.strobeMode(false);
             strobe = false;
-            return true;
         }
     }
     if (data.message.indexOf("/lights") === 0 && data.fromID === "50aeb07e96fba52c3ca04ca8") {
@@ -1035,11 +1033,9 @@ function disable(data) {
             RoomUser.audience.lightsOut(true);
             updateChat("",",DerpTheBass' set the mood");
             lights = true;
-            return true;
         }else{
             RoomUser.audience.lightsOut(false);
             lights = false;
-            return true;
         }
     }
 }
