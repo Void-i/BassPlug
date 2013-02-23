@@ -1,5 +1,5 @@
-var version = "Running BassPlug Dev Version 1 <br>Type '/change' for the changes made.<br>Use '/cmd' to show all commands.";
-var changeLog = "Dev Version 1 - Fixed the new emote | Fixed and re-added the /curate command | Changed the ui opacity | Fixed the userlist again";
+var version = "Running BassPlug Dev Version 2 <br>Type '/change' for the changes made.<br>Use '/cmd' to show all commands.";
+var changeLog = "Dev Version 1 - Added a secret little surprise";
 appendToChat(version, null, "#58FAF4");
 
 var recent = false,
