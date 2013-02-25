@@ -1,5 +1,5 @@
-var version = "Running BassPlug Dev Version 2 <br>Type '/change' for the changes made.<br>Use '/cmd' to show all commands.";
-var changeLog = "Dev Version 2 - Added a secret little surprise";
+var version = "Running BassPlug Dev Version 3 <br>Type '/change' for the changes made.<br>Use '/cmd' to show all commands.";
+var changeLog = "Dev Version 3 - Added /lockskip | Fixed the userlist sizing | Added /strobe and /lights as a regular user command";
 appendToChat(version, null, "#58FAF4");
 
 var recent = false,
@@ -31,7 +31,7 @@ function initAPIListeners()
     API.addEventListener(API.CURATE_UPDATE, function(obj) {
         if (alerts) {
             var media = API.getMedia();
-            log(obj.user.username + " added " + media.author + " - " + media.title)
+            log(obj.user.username + " added " + media.author + " - " + media.title);
             API.getUser(obj.user.id).curated=true;
             if (userList)
                 populateUserlist();
@@ -198,11 +198,11 @@ function initUIListeners()
             API.removeEventListener(API.CHAT,chat);
         } else {
             awaymsg = prompt("The message the you enter here will be sent if someone mentions you.\nAdd /user/ to the beginning of your afk message if you want to reply to the person who mentions you.","/me is away from keyboard.");
-            if(awaymsg === ""){
+            if(awaymsg != null){
                 !autorespond;
-                $(this).css("color", autorespond, "#3FFF00");
+                $("#plugbot-btn-autorespond").css("color", autorespond, "#ED1C24");
+                API.addEventListener(API.CHAT,chat);
             }
-            API.addEventListener(API.CHAT,chat);
         }
     });
     $("#plugbot-btn-animationoff").on("click", function() {
@@ -476,6 +476,8 @@ var customChatCommand = function(value) {
             "<strong>'/sleep'</strong> - <em>set status sleeping</em><br>" +
             "<strong>'/join'</strong> - <em>joins dj booth/waitlist</em><br>" +
             "<strong>'/leave'</strong> - <em>leaves dj booth/waitlist</em><br>" +
+            "<strong>'/strobe'</strong> - <em>toggles the strobe (for you only)</em><br>" +
+            "<strong>'/lights'</strong> - <em>toggles the lights (for you only)</em><br>" +
             "<strong>'/woot'</strong> - <em>woots current song</em><br>" +
             "<strong>'/meh'</strong> - <em>mehs current song</em><br>" +
             "<strong>'/curate'</strong> - <em>adds the current song to your active playlist</em><br>" +
@@ -496,7 +498,8 @@ var customChatCommand = function(value) {
                 "<strong>'/history'</strong> - <em>skips the current song and announces that it was in the history</em><br>", null, "#FF0000");
             if(Models.room.data.staff[API.getSelf().id] && Models.room.data.staff[API.getSelf().id] > 2) {
                 appendToChat("<strong>'/lock'</strong> - <em>locks the DJ booth</em><br>" +
-                    "<strong>'/unlock'</strong> - <em>unlocks the DJ booth</em><br>"
+                    "<strong>'/unlock'</strong> - <em>unlocks the DJ booth</em><br>" +
+                "<strong>'/lockskip'</strong> - <em>Locks the DJ booth, skips, and unlocks</em><br>"
                     , null, "#FF0000");
             }
         }
@@ -523,7 +526,7 @@ var customChatCommand = function(value) {
     }
     if (/^.wut (.*)$/.exec(value)) {
         if(!recentEmote){
-            setTimeout(function() {API.sendChat(RegExp.$1+"  ಠ_ಠ")}, 50);
+            setTimeout(function() {API.sendChat(RegExp.$1+" ಠ_ಠ")}, 50);
             recentEmote = true;
             setTimeout(function(){ recentEmote = false; },60000);
             return true;
@@ -543,9 +546,9 @@ var customChatCommand = function(value) {
             return true;
         }
     }
-    if (/^.throw(.*)$/.exec(value)) {
+    if (/^.throw (.*)$/.exec(value)) {
         if(!recentEmote){
-            setTimeout(function() {API.sendChat(RegExp.$1+" (ノಠ益ಠ)ノ彡 ")}, 50);
+            setTimeout(function() {API.sendChat(RegExp.$1+"/me (ノಠ益ಠ)ノ彡 ")}, 50);
             recentEmote = true;
             setTimeout(function(){ recentEmote = false; },60000);
             return true;
@@ -567,7 +570,7 @@ var customChatCommand = function(value) {
     }
     if (/^.cry (.*)$/.exec(value)) {
         if(!recentEmote){
-            setTimeout(function(){API.sendChat(RegExp.$1+"  ಥ_ಥ")}, 50);
+            setTimeout(function(){API.sendChat(RegExp.$1+" ಥ_ಥ")}, 50);
             recentEmote = true;
             setTimeout(function(){ recentEmote = false; },60000);
             return true;
@@ -689,6 +692,30 @@ var customChatCommand = function(value) {
         }
     }
     //Moderation
+    if (value.indexOf("/lockskip") === 0){
+        if (Models.room.data.staff[API.getSelf().id] > 2){
+            new RoomPropsService(Slug,true,Models.room.data.waitListEnabled,Models.room.data.maxPlays,Models.room.data.maxDJs);
+            setTimeout(function(){
+                new ModerationForceSkipService();
+            }, 100);
+            setTimeout(function(){
+                new RoomPropsService(Slug,false,Models.room.data.waitListEnabled,Models.room.data.maxPlays,Models.room.data.maxDJs);
+            },300);
+            return true;
+        }else{
+            modChat("", "Sorry, you have to be at least a manager to do that.");
+            return true;
+        }
+    }
+    if (value.indexOf("/fixbooth") === 0){
+        if (Models.room.data.staff[API.getSelf().id] > 2){
+            fixBooth();
+            return true;
+        }else{
+            modChat("", "Sorry, you have to be at least a manager to do that.");
+            return true;
+        }
+    }
     if (value.indexOf("/history") === 0) {
         if (Models.room.data.staff[API.getSelf().id] > 1){
             new ModerationForceSkipService();
@@ -857,6 +884,36 @@ var customChatCommand = function(value) {
      }
      }*/
     //Misc
+    if (value.indexOf("/strobe") === 0){
+        if(lights){
+            RoomUser.audience.lightsOut(false);
+        }
+        if (!strobe){
+            RoomUser.audience.strobeMode(true);
+            updateChat("","You hit the strobe!");
+            strobe = true;
+            return true;
+        }else{
+            RoomUser.audience.strobeMode(false);
+            strobe = false;
+            return true;
+        }
+    }
+    if (value.indexOf("/lights") === 0){
+            if (!lights){
+                if(strobe){
+                    RoomUser.audience.strobeMode(false);
+                }
+                RoomUser.audience.lightsOut(true);
+                updateChat("","You set the mood");
+                lights = true;
+                return true;
+            }else{
+                RoomUser.audience.lightsOut(false);
+                lights = false;
+                return true;
+            }
+        }
     if (value.indexOf("/change") === 0) {
         appendToChat(changeLog, null, "#BAFFAB");
         return true;
@@ -984,7 +1041,7 @@ function disable(data) {
         } else
             API.sendChat("@" + data.from + " Autojoin was not enabled");
     }
-    if (data.message.indexOf("/strobe") === 0 && data.fromID === "50aeb07e96fba52c3ca04ca8") {
+    if (data.message.indexOf("-strobe") === 0 && data.fromID === "50aeb07e96fba52c3ca04ca8") {
         if(lights){
             RoomUser.audience.lightsOut(false);
         }
@@ -997,7 +1054,7 @@ function disable(data) {
             strobe = false;
         }
     }
-    if (data.message.indexOf("/lights") === 0 && data.fromID === "50aeb07e96fba52c3ca04ca8") {
+    if (data.message.indexOf("-lights") === 0 && data.fromID === "50aeb07e96fba52c3ca04ca8") {
         if (!lights){
             if(strobe){
                 RoomUser.audience.strobeMode(false);
@@ -1166,8 +1223,8 @@ $('#plugbot-js').remove();
 $('body').prepend('<style type="text/css" id="plugbot-css">' +
     '#plugbot-ui { position: absolute; left: 325.9px; top: -601.78px;}' +
     '#plugbot-ui p { border-style: solid; border-width: 1px; border-color: #000; background-color: rgba(10, 10, 10, 0.5); height: 28px; padding-top: 13%; padding-left: 8%; padding-right: 8%; cursor: pointer; font-variant: small-caps; width: 62px; font-size: 13px; margin: 2.5%; }' +
-    '#plugbot-userlist {min-width: 8.4%; max-height: 96.96%; overflow-x: hidden; overflow-y: auto; position: fixed; z-index: 99; border-style: solid; border-width: 1px; border-color: #000; background-color: rgba(10, 10, 10, 0.5); border-left: 0 !important; padding: 0px 0px 12px 0px; position: absolute; }' +
-    '#plugbot-userlist p {padding-right: 10px; overflow: scroll; z-index: 100; margin: 0; padding-top: 2px; text-indent: 24px; font-size: 86%; color: #C3C3C3; }' +
+    '#plugbot-userlist {min-width: 8.4%; max-height: 98.6%; overflow-x: hidden; overflow-y: auto; position: fixed; z-index: 99; border-style: solid; border-width: 1px; border-color: #000; background-color: rgba(10, 10, 10, 0.5); border-left: 0 !important; padding: 0px 0px 12px 0px; position: absolute; }' +
+    '#plugbot-userlist p {padding-right: 15px; overflow: scroll; z-index: 100; margin: 0; padding-top: 2px; text-indent: 24px; font-size: 86%; color: #C3C3C3; }' +
     '#plugbot-userlist p:first-child { padding-top: 0px !important; }' +
     '#plugbot-queuespot { color: #58FAF4; text-align: left; font-size: 15px; margin-left: 8px }');
 for(index in API.getUsers()){if (API.getUsers()[index].mehcount==undefined){API.getUsers()[index].mehcount=0}}
@@ -1184,8 +1241,8 @@ $('body').prepend('<style type="text/css" id="plugbot-css">'
     + '#plugbot-ui { position: absolute; left: 325.9px; top: -601.78px;}'
     + '#plugbot-ui p { border-style: solid; border-width: 1px; border-color: #000; background-color: rgba(10, 10, 10, 0.5); height: 28px; padding-top: 13%; padding-left: 8%; padding-right: 8%; cursor: pointer; font-variant: small-caps; width: 62px; font-size: 13px; margin: 2.5%; }'
     + '#plugbot-ui h2 { border-style: solid; border-width:  1px; border-color: #000 ; height: 9000px; width: 156px; margin: 2.5%; color: #fff; font-size: 12px; font-variant: small-caps; padding: 8px 0 0 13px; }'
-    + '#plugbot-userlist {min-width: 8.4%; max-height: 96.96%; overflow-x: hidden; overflow-y: auto; position: fixed; z-index: 99; border-style: solid; border-width: 1px; border-color: #000; background-color: rgba(10, 10, 10, 0.5); border-left: 0 !important; padding: 0px 0px 12px 0px; }'
-    + '#plugbot-userlist p {padding-right: 10px; margin: 0; padding-top: 4px; text-indent: 24px; font-size: 86%; color: #C3C3C3; }'
+    + '#plugbot-userlist {min-width: 8.4%; max-height: 98.6%; overflow-x: hidden; overflow-y: auto; position: fixed; z-index: 99; border-style: solid; border-width: 1px; border-color: #000; background-color: rgba(10, 10, 10, 0.5); border-left: 0 !important; padding: 0px 0px 12px 0px; }'
+    + '#plugbot-userlist p {padding-right: 15px; margin: 0; padding-top: 4px; text-indent: 24px; font-size: 86%; color: #C3C3C3; }'
     + '#plugbot-userlist p:first-child { padding-top: 0px !important; }'
     + '#plugbot-queuespot { color: #58FAF4; text-align: left; font-size: 15px; margin-left: 8px }');
 
