@@ -1,5 +1,5 @@
-var version = "Running BassPlug version 2.0.2 <br>Type '/change' for the changes made.<br>Use '/cmd' to show all commands.";
-var changeLog = "Version 2.0.2 - Added the new emote";
+var version = "Running BassPlug Stable Version 2.03 <br>Type '/change' for the changes made.<br>Use '/cmd' to show all commands.";
+var changeLog = "Stable Version 2.03 - Added /lockskip | Fixed the userlist sizing | Added /strobe and /lights as a regular user command";
 appendToChat(version, null, "#58FAF4");
 
 var recent = false,
@@ -15,6 +15,8 @@ var recent = false,
     animation = true,
     menu = true,
     alerts = true,
+    strobe = false,
+    lights = false,
     mehcount = 0;
 
 function initAPIListeners()
@@ -29,7 +31,7 @@ function initAPIListeners()
     API.addEventListener(API.CURATE_UPDATE, function(obj) {
         if (alerts) {
             var media = API.getMedia();
-            log(obj.user.username + " added " + media.author + " - " + media.title)
+            log(obj.user.username + " added " + media.author + " - " + media.title);
             API.getUser(obj.user.id).curated=true;
             if (userList)
                 populateUserlist();
@@ -52,6 +54,14 @@ function initAPIListeners()
         if (userList)
             populateUserlist();
     });
+    API.addEventListener(API.DJ_ADVANCE, function(){
+        if(strobe){
+            strobe = false;
+        }
+        if(lights){
+            lights = false;
+        }
+    });
     API.addEventListener(API.CHAT, disable);
 }
 
@@ -61,7 +71,7 @@ function displayUI(data) {
         $('#user-container').prepend('<div id="plugbot-ui"></div>');
         $('#plugbot-ui').append(
             '<p id="plugbot-btn-menu" style="color:#58FAF4; ">BassPlug</p>' +
-                '<div style="visibility:visible">' +
+                '<div style="width: 100%; visibility:visible">' +
                 '<p id="plugbot-btn-woot" style="color:#3FFF00">Autowoot</p>' +
                 '<p id="plugbot-btn-hidevideo" style="color:#ED1C24">Hide Video</p>' +
                 '<p id="plugbot-btn-userlist" style="color:#3FFF00">Userlist</p>' +
@@ -75,7 +85,7 @@ function displayUI(data) {
         $('#user-container').prepend('<div id="plugbot-ui"></div>');
         $('#plugbot-ui').append(
             '<p id="plugbot-btn-menu" style="color:#58FAF4 ">BassPlug</p>' +
-                '<div style="visibility:visible">' +
+                '<div style="width: 100%; visibility:visible">' +
                 '<p id="plugbot-btn-woot" style="color:#3FFF00">Autowoot</p>' +
                 '<p id="plugbot-btn-queue" style="color:#ED1C24">Autojoin</p>' +
                 '<p id="plugbot-btn-hidevideo" style="color:#ED1C24">Hide Video</p>' +
@@ -91,58 +101,58 @@ function displayUI(data) {
 function initUIListeners()
 {
     $("#plugbot-btn-menu") .hover(function(){
-            $(this).css("background-color", "rgba(39, 39, 39, 0.83)");
+            $(this).css("background-color", "rgba(39, 39, 39, 0.5)");
         },
         function(){
-            $(this).css("background-color", "rgba(10, 10, 10, 0.83)");
+            $(this).css("background-color", "rgba(10, 10, 10, 0.5)");
         });
     $("#plugbot-btn-woot") .hover(function(){
-    $(this).css("background-color", "rgba(39, 39, 39, 0.83)");
-    },
-        function(){
-        $(this).css("background-color", "rgba(10, 10, 10, 0.83)");
-});
-    $("#plugbot-btn-queue") .hover(function(){
-            $(this).css("background-color", "rgba(39, 39, 39, 0.83)");
+            $(this).css("background-color", "rgba(39, 39, 39, 0.5)");
         },
         function(){
-            $(this).css("background-color", "rgba(10, 10, 10, 0.83)");
+            $(this).css("background-color", "rgba(10, 10, 10, 0.5)");
+        });
+    $("#plugbot-btn-queue") .hover(function(){
+            $(this).css("background-color", "rgba(39, 39, 39, 0.5)");
+        },
+        function(){
+            $(this).css("background-color", "rgba(10, 10, 10, 0.5)");
         });
     $("#plugbot-btn-hidevideo") .hover(function(){
-            $(this).css("background-color", "rgba(39, 39, 39, 0.83)");
+            $(this).css("background-color", "rgba(39, 39, 39, 0.5)");
         },
         function(){
-            $(this).css("background-color", "rgba(10, 10, 10, 0.83)");
+            $(this).css("background-color", "rgba(10, 10, 10, 0.5)");
         });
     $("#plugbot-btn-userlist") .hover(function(){
-            $(this).css("background-color", "rgba(39, 39, 39, 0.83)");
+            $(this).css("background-color", "rgba(39, 39, 39, 0.5)");
         },
         function(){
-            $(this).css("background-color", "rgba(10, 10, 10, 0.83)");
+            $(this).css("background-color", "rgba(10, 10, 10, 0.5)");
         });
     $("#plugbot-btn-autorespond") .hover(function(){
-            $(this).css("background-color", "rgba(39, 39, 39, 0.83)");
+            $(this).css("background-color", "rgba(39, 39, 39, 0.5)");
         },
         function(){
-            $(this).css("background-color", "rgba(10, 10, 10, 0.83)");
+            $(this).css("background-color", "rgba(10, 10, 10, 0.5)");
         });
     $("#plugbot-btn-animationoff") .hover(function(){
-            $(this).css("background-color", "rgba(39, 39, 39, 0.83)");
+            $(this).css("background-color", "rgba(39, 39, 39, 0.5)");
         },
         function(){
-            $(this).css("background-color", "rgba(10, 10, 10, 0.83)");
+            $(this).css("background-color", "rgba(10, 10, 10, 0.5)");
         });
     $("#plugbot-btn-stream") .hover(function(){
-            $(this).css("background-color", "rgba(39, 39, 39, 0.83)");
+            $(this).css("background-color", "rgba(39, 39, 39, 0.5)");
         },
         function(){
-            $(this).css("background-color", "rgba(10, 10, 10, 0.83)");
+            $(this).css("background-color", "rgba(10, 10, 10, 0.5)");
         });
     $("#plugbot-btn-alerts") .hover(function(){
-            $(this).css("background-color", "rgba(39, 39, 39, 0.83)");
+            $(this).css("background-color", "rgba(39, 39, 39, 0.5)");
         },
         function(){
-            $(this).css("background-color", "rgba(10, 10, 10, 0.83)");
+            $(this).css("background-color", "rgba(10, 10, 10, 0.5)");
         });
 
     $("#plugbot-btn-menu").on("click", function() {
@@ -160,6 +170,7 @@ function initUIListeners()
         userList = !userList;
         $(this).css("color", userList ? "#3FFF00" : "#ED1C24");
         $("#plugbot-userlist").css("visibility", userList ? ("visible") : ("hidden"));
+        $("#plugbot-userlist").css("overflow", userList ? ("auto") : ("hidden"));
         if (!userList)
             $("#plugbot-userlist").empty();
         else
@@ -187,11 +198,11 @@ function initUIListeners()
             API.removeEventListener(API.CHAT,chat);
         } else {
             awaymsg = prompt("The message the you enter here will be sent if someone mentions you.\nAdd /user/ to the beginning of your afk message if you want to reply to the person who mentions you.","/me is away from keyboard.");
-            if(awaymsg === ""){
+            if(awaymsg != null){
                 !autorespond;
-                $(this).css("color", autorespond, "#3FFF00");
+                $("#plugbot-btn-autorespond").css("color", autorespond, "#ED1C24");
+                API.addEventListener(API.CHAT,chat);
             }
-            API.addEventListener(API.CHAT,chat);
         }
     });
     $("#plugbot-btn-animationoff").on("click", function() {
@@ -204,16 +215,16 @@ function initUIListeners()
         }
     });
     $("#plugbot-btn-stream").on("click", function() {
-       stream = !stream;
+        stream = !stream;
         $(this).css("color", !stream ? "#3FFF00" : "#ED1C24");
         if(stream){
-        API.sendChat("/stream off");
+            API.sendChat("/stream off");
         }else{
             API.sendChat("/stream on");
         }
     });
     $("#plugbot-btn-alerts").on("click", function() {
-       $(this).css("color", !alerts ? "#3FFF00" : "#ED1C24");
+        $(this).css("color", !alerts ? "#3FFF00" : "#ED1C24");
         if(alerts){
             API.sendChat("/alertsoff");
         }else{
@@ -301,43 +312,7 @@ function populateUserlist()
         appendUser(user);
     }
 }
-{
-    API.addEventListener(API.USER_SKIP, skip)
-    API.addEventListener(API.USER_JOIN, join)
-    API.addEventListener(API.USER_LEAVE, leave)
-    API.addEventListener(API.VOTE_UPDATE, vote)
-    API.addEventListener(API.VOTE_SKIP, voteskip)
-    API.addEventListener(API.MOD_SKIP, modskip)
-    API.addEventListener(API.DJ_ADVANCE, advance)
-    function modskip(data)
-    {
-        populateUserlist()
-    }
-    function voteskip(data)
-    {
-        populateUserlist()
-    }
-    function advance(data)
-    {
-        populateUserlist()
-    }
-    function vote(data)
-    {
-        populateUserlist()
-    }
-    function leave(data)
-    {
-        populateUserlist()
-    }
-    function join(data)
-    {
-        populateUserlist()
-    }
-    function skip(data)
-    {
-        populateUserlist()
-    }
-}
+
 function appendUser(user)
 {
     var username = user.username;
@@ -347,13 +322,13 @@ function appendUser(user)
     }
     var imagePrefix;
     switch (permission) {
-        case 0:  	// Normal user
+        case 0:        // Normal user
             imagePrefix = 'normal'
             break;
-        case 1:		// Featured DJ
+        case 1:        // Featured DJ
             imagePrefix = 'featured';
             break;
-        case 2:		// Bouncer
+        case 2:    	// Bouncer
             imagePrefix = 'bouncer';
             break;
         case 3:		// Manager
@@ -381,11 +356,11 @@ function appendUser(user)
 }
 function colorByVote(vote) {
     if (!vote)	{
-        return '#fff'; // blame Boycey
+        return '#DDDDDD'; // blame Boycey
     }
     switch (vote) {
         case -1: 	return '#F43636';
-        case 0:		return '#FFFFF';
+        case 0:		return '#DDDDDD';
         case 1:		return '#95F436';
     }
 }
@@ -492,32 +467,41 @@ var customChatCommand = function(value) {
         return true;
     if (value.indexOf("/cmd") === 0) {
         appendToChat("<center><strong>User Commands -</strong></center><br>" +
-        "<strong>'/change'</strong> - <em>displays the changelog for this version</em><br>" +
-        "<strong>'/deltab'</strong> - <em>Deletes the P.P userlist tab</em><br>" +
-        "<strong>'/nick'</strong> - <em>change username</em>" +
-        "<strong>'/avail'</strong> - <em>set status available</em><br>" +
-        "<strong>'/afk'</strong> - <em>set status afk</em><br>" +
-        "<strong>'/work'</strong> - <em>set status working</em><br>" +
-        "<strong>'/sleep'</strong> - <em>set status sleeping</em><br>" +
-        "<strong>'/join'</strong> - <em>joins dj booth/waitlist</em><br>" +
-        "<strong>'/leave'</strong> - <em>leaves dj booth/waitlist</em><br>" +
-        "<strong>'/woot'</strong> - <em>woots current song</em><br>" +
-        "<strong>'/meh'</strong> - <em>mehs current song</em><br>" +
-        "<strong>'/emotes'</strong> - <em>prints the commands for chat responses</em><br>" +
-        "<strong>'/hide'</strong> - <em>hides the video without muting the sound</em><br>" +
-        "<strong>'/ref'</strong> - <em>refreshes the video/soundcloud</em><br>" +
-        "<strong>'/alertsoff'</strong> - <em>turns curate notices and user join/leave messages off</em><br>" +
-        "<strong>'/alertson'</strong> - <em>turns curate notices and user join/leave messages on</em><br>" +
-        "<strong>'/getpos'</strong> - <em>get current waitlist position</em><br>" +
-        "<strong>'/version'</strong> - <em>displays version number</em><br>", null, "#F700FA");
+            "<strong>'/change'</strong> - <em>displays the changelog for this version</em><br>" +
+            "<strong>'/deltab'</strong> - <em>Deletes the P.P userlist tab</em><br>" +
+            "<strong>'/nick'</strong> - <em>change username</em>" +
+            "<strong>'/avail'</strong> - <em>set status available</em><br>" +
+            "<strong>'/afk'</strong> - <em>set status afk</em><br>" +
+            "<strong>'/work'</strong> - <em>set status working</em><br>" +
+            "<strong>'/sleep'</strong> - <em>set status sleeping</em><br>" +
+            "<strong>'/join'</strong> - <em>joins dj booth/waitlist</em><br>" +
+            "<strong>'/leave'</strong> - <em>leaves dj booth/waitlist</em><br>" +
+            "<strong>'/strobe'</strong> - <em>toggles the strobe (for you only)</em><br>" +
+            "<strong>'/lights'</strong> - <em>toggles the lights (for you only)</em><br>" +
+            "<strong>'/woot'</strong> - <em>woots current song</em><br>" +
+            "<strong>'/meh'</strong> - <em>mehs current song</em><br>" +
+            "<strong>'/curate'</strong> - <em>adds the current song to your active playlist</em><br>" +
+            "<strong>'/emotes'</strong> - <em>prints the commands for chat responses</em><br>" +
+            "<strong>'/hide'</strong> - <em>hides the video without muting the sound</em><br>" +
+            "<strong>'/ref'</strong> - <em>refreshes the video/soundcloud</em><br>" +
+            "<strong>'/alertsoff'</strong> - <em>turns curate notices and user join/leave messages off</em><br>" +
+            "<strong>'/alertson'</strong> - <em>turns curate notices and user join/leave messages on</em><br>" +
+            "<strong>'/getpos'</strong> - <em>get current waitlist position</em><br>" +
+            "<strong>'/version'</strong> - <em>displays version number</em><br>", null, "#F700FA");
         if (Models.room.data.staff[API.getSelf().id] && Models.room.data.staff[API.getSelf().id] > 1) {
             appendToChat("<center><strong>Moderation Commands -</strong></center><br>" +
-            "<strong>'/skip'</strong> - <em>skips current song</em><br>" +
-            "<strong>'/kick (username)'</strong> - <em>kicks targeted user</em><br>" +
-            "<strong>'/add (username)'</strong> - <em>adds targeted user to dj booth/waitlist</em><br>" +
-            "<strong>'/remove (username)'</strong> - <em>removes targeted user from dj booth/waitlist</em><br>" +
-            "<strong>'/whois (username)'</strong> - <em>gives general information about user</em><br>" +
-            "<strong>'/history'</strong> - <em>skips the current song and announces that it was in the history</em><br>", null, "#FF0000");
+                "<strong>'/skip'</strong> - <em>skips current song</em><br>" +
+                "<strong>'/kick (username)'</strong> - <em>kicks targeted user</em><br>" +
+                "<strong>'/add (username)'</strong> - <em>adds targeted user to dj booth/waitlist</em><br>" +
+                "<strong>'/remove (username)'</strong> - <em>removes targeted user from dj booth/waitlist</em><br>" +
+                "<strong>'/whois (username)'</strong> - <em>gives general information about user</em><br>" +
+                "<strong>'/history'</strong> - <em>skips the current song and announces that it was in the history</em><br>", null, "#FF0000");
+            if(Models.room.data.staff[API.getSelf().id] && Models.room.data.staff[API.getSelf().id] > 2) {
+                appendToChat("<strong>'/lock'</strong> - <em>locks the DJ booth</em><br>" +
+                    "<strong>'/unlock'</strong> - <em>unlocks the DJ booth</em><br>" +
+                "<strong>'/lockskip'</strong> - <em>Locks the DJ booth, skips, and unlocks</em><br>"
+                    , null, "#FF0000");
+            }
         }
         return true;
     }
@@ -530,7 +514,7 @@ var customChatCommand = function(value) {
             "<strong>'/yuno'</strong> - <em>Y U NO USE THIS EMOTES!?</em><br>" +
             "<strong>'/fans'</strong> - <em>That random foreign guy keeps asking for fans again, help him out!</em><br>" +
             "<strong>'/cry'</strong> - <em>Dem feels</em><br>" +
-            "<strong>'/throw'</strong> - <em>You throw an unknown object out of the chat box</em><br>" +
+            "<strong>'/throw'</strong> - <em>You thow an unkown object out of the chatbox</em>" +
             "<strong>Protip: </strong>Replace the slash in front of a command with a '.' and put a message after it to add the emote to the message!"
             , null, "#66FFFF");
         return true;
@@ -540,23 +524,12 @@ var customChatCommand = function(value) {
         API.sendChat("↑");
         return true;
     }
-    if (value.indexOf("/throw") === 0) {
+    if (/^.wut (.*)$/.exec(value)) {
         if(!recentEmote){
-            setTimeout(function(){API.sendChat("/me (ノಠ益ಠ)ノ彡")}, 50);
+            setTimeout(function() {API.sendChat(RegExp.$1+" ಠ_ಠ")}, 50);
             recentEmote = true;
-            setTimeout(function(){recentEmote = false;},60000);
+            setTimeout(function(){ recentEmote = false; },60000);
             return true;
-        }else{
-            appendToChat("Wait until the emote timer is done!", null, "#C50000");
-            return true;
-        }
-    }
-   if (/^.wut (.*)$/.exec(value)) {
-        if(!recentEmote){
-        setTimeout(function() {API.sendChat(RegExp.$1+" ಠ_ಠ")}, 50);
-       recentEmote = true;
-       setTimeout(function(){ recentEmote = false; },60000);
-        return true;
         }else{
             appendToChat("Wait until the emote timer is done!", null, "#C50000");
             return true;
@@ -573,11 +546,22 @@ var customChatCommand = function(value) {
             return true;
         }
     }
+    if (/^.throw (.*)$/.exec(value)) {
+        if(!recentEmote){
+            setTimeout(function() {API.sendChat(RegExp.$1+"/me (ノಠ益ಠ)ノ彡 ")}, 50);
+            recentEmote = true;
+            setTimeout(function(){ recentEmote = false; },60000);
+            return true;
+        }else{
+            appendToChat("Wait until the emote timer is done!", null, "#C50000");
+            return true;
+        }
+    }
     if (/^.eyeroll (.*)$/.exec(value)) {
         if(!recentEmote){
-        setTimeout(function(){API.sendChat(RegExp.$1+" ¬_¬")}, 50);
-        recentEmote = true;
-        setTimeout(function(){ recentEmote = false; },60000);
+            setTimeout(function(){API.sendChat(RegExp.$1+" ¬_¬")}, 50);
+            recentEmote = true;
+            setTimeout(function(){ recentEmote = false; },60000);
             return true;
         }else{
             appendToChat("Wait until the emote timer is done!", null, "#C50000");
@@ -586,7 +570,7 @@ var customChatCommand = function(value) {
     }
     if (/^.cry (.*)$/.exec(value)) {
         if(!recentEmote){
-            setTimeout(function(){API.sendChat(RegExp.$1+"  ಥ_ಥ")}, 50);
+            setTimeout(function(){API.sendChat(RegExp.$1+" ಥ_ಥ")}, 50);
             recentEmote = true;
             setTimeout(function(){ recentEmote = false; },60000);
             return true;
@@ -617,61 +601,19 @@ var customChatCommand = function(value) {
             return true;
         }
     }
-    /*if (/^.flip (.*)$/.exec(value)) {
-        if(!recentEmote){
-        setTimeout(function(){API.sendChat("(╯°□°）╯︵ ┻━┻ "+ RegExp.$1)}, 50);
-        recentEmote = true;
-        setTimeout(function(){ recentEmote = false; },60000);
-            return true;
-        }else{
-            appendToChat("Wait until the emote timer is done!", null, "#C50000");
-            return true;
-        }
-    }*/
     if (/^.boxofwats (.*)$/.exec(value)) {
         if(!recentEmote){
-        setTimeout(function(){API.sendChat(RegExp.$1+" (>-_-)>[wats]")}, 50);
-        recentEmote = true;
-        setTimeout(function(){ recentEmote = false; },60000);
-            return true;
-        }else{
-            appendToChat("Wait until the emote timer is done!", null, "#C50000");
-            return true;
-        }
-    }
-/*    if (/^.replace (.*)$/.exec(value)) {
-        if(!recentEmote){
-        setTimeout(function () {API.sendChat("┬─┬ノ( º _ ºノ) "+ RegExp.$1)}, 50);
-        recentEmote = true;
-        setTimeout(function(){ recentEmote = false; },60000);
-            return true;
-        }else{
-            appendToChat("Wait until the emote timer is done!", null, "#C50000");
-            return true;
-        }
-    }
-    if (/^.hitlerflip (.*)$/.exec(value)) {
-        if(!recentEmote){
-        setTimeout(function() {API.sendChat("(ﾉಥ益ಥ）ﾉ﻿ ┻━┻ "+ RegExp.$1)}, 50);
-        recentEmote = true;
-        setTimeout(function(){ recentEmote = false; },60000);
-            return true;
-        }else{
-            appendToChat("Wait until the emote timer is done!", null, "#C50000");
-            return true;
-        }
-    }*/
-        if (value.indexOf("/wut") === 0) {
-            if(!recentEmote){
-            setTimeout(function(){API.sendChat("/me ಠ_ಠ ")}, 50);
+            setTimeout(function(){API.sendChat(RegExp.$1+" (>-_-)>[wats]")}, 50);
             recentEmote = true;
-                setTimeout(function(){ recentEmote = false; },60000);
-                return true;
-            }else{
+            setTimeout(function(){ recentEmote = false; },60000);
+            return true;
+        }else{
             appendToChat("Wait until the emote timer is done!", null, "#C50000");
-                return true;
-            }
+            return true;
         }
+    }
+
+    /******************************************************************************************/
     if (value.indexOf("/throw") === 0) {
         if(!recentEmote){
             setTimeout(function(){API.sendChat("/me (ノಠ益ಠ)ノ彡")}, 50);
@@ -683,50 +625,50 @@ var customChatCommand = function(value) {
             return true;
         }
     }
-		        if (value.indexOf("/420") === 0) {
-            if(!recentEmote){
+    if (value.indexOf("/wut") === 0) {
+        if(!recentEmote){
+            setTimeout(function(){API.sendChat("/me  ಠ_ಠ ")}, 50);
+            recentEmote = true;
+            setTimeout(function(){ recentEmote = false; },60000);
+            return true;
+        }else{
+            appendToChat("Wait until the emote timer is done!", null, "#C50000");
+            return true;
+        }
+    }
+    if (value.indexOf("/420") === 0) {
+        if(!recentEmote){
             setTimeout(function(){API.sendChat("/me ≖‿≖")}, 50);
             recentEmote = true;
-                setTimeout(function(){ recentEmote = false; },60000);
-                return true;
-            }else{
+            setTimeout(function(){ recentEmote = false; },60000);
+            return true;
+        }else{
             appendToChat("Wait until the emote timer is done!", null, "#C50000");
-                return true;
-            }
+            return true;
         }
-        if (value.indexOf("/eyeroll") === 0) {
-            if(!recentEmote){
+    }
+    if (value.indexOf("/eyeroll") === 0) {
+        if(!recentEmote){
             setTimeout(function(){API.sendChat("/me ¬_¬")}, 50);
             recentEmote = true;
             setTimeout(function(){ recentEmote = false; },60000);
             return true;
-            }else{
-                appendToChat("Wait until the emote timer is done!", null, "#C50000");
-                return true;
-            }
-        }
-/*        if (value.indexOf("/flip") === 0) {
-            if(!recentEmote){
-            setTimeout(function(){API.sendChat("/me (╯°□°）╯︵ ┻━┻ ")}, 50);
-            recentEmote = true;
-            setTimeout(function(){ recentEmote = false; },60000);
+        }else{
+            appendToChat("Wait until the emote timer is done!", null, "#C50000");
             return true;
-            }else{
-                appendToChat("Wait until the emote timer is done!", null, "#C50000");
-                return true;
-            }
-        }*/
-        if (value.indexOf("/boxofwats") === 0) {
-            if(!recentEmote){
+        }
+    }
+    if (value.indexOf("/boxofwats") === 0) {
+        if(!recentEmote){
             setTimeout(function(){API.sendChat("/me (>-_-)>[wats]")}, 50);
             recentEmote = true;
             setTimeout(function(){ recentEmote = false; },60000);
             return true;
-            }else{
-                appendToChat("Wait until the emote timer is done!", null, "#C50000");
-                return true;
-            }
+        }else{
+            appendToChat("Wait until the emote timer is done!", null, "#C50000");
+            return true;
         }
+    }
     if (value.indexOf("/yuno") === 0) {
         if(!recentEmote){
             setTimeout(function(){API.sendChat("/me ლ(ಥ益ಥლ)")}, 50);
@@ -749,29 +691,31 @@ var customChatCommand = function(value) {
             return true;
         }
     }
-/*        if (value.indexOf("/replace") === 0) {
-            if(!recentEmote){
-            setTimeout(function () {API.sendChat("/me ┬─┬ノ( º _ ºノ)")}, 50);
-            recentEmote = true;
-            setTimeout(function(){ recentEmote = false; },60000);
-            return true;
-            }else{
-                appendToChat("Wait until the emote timer is done!", null, "#C50000");
-                return true;
-            }
-        }
-        if (value.indexOf("/hitlerflip") === 0) {
-            if(!recentEmote){
-            setTimeout(function() {API.sendChat("/me (ﾉಥ益ಥ）ﾉ﻿ ┻━┻ ")}, 50);
-            recentEmote = true;
-            setTimeout(function(){ recentEmote = false; },60000);
-            return true;
-            }else{
-                appendToChat("Wait until the emote timer is done!", null, "#C50000");
-                return true;
-            }
-        }*/
     //Moderation
+    if (value.indexOf("/lockskip") === 0){
+        if (Models.room.data.staff[API.getSelf().id] > 2){
+            new RoomPropsService(Slug,true,Models.room.data.waitListEnabled,Models.room.data.maxPlays,Models.room.data.maxDJs);
+            setTimeout(function(){
+                new ModerationForceSkipService();
+            }, 100);
+            setTimeout(function(){
+                new RoomPropsService(Slug,false,Models.room.data.waitListEnabled,Models.room.data.maxPlays,Models.room.data.maxDJs);
+            },300);
+            return true;
+        }else{
+            modChat("", "Sorry, you have to be at least a manager to do that.");
+            return true;
+        }
+    }
+    if (value.indexOf("/fixbooth") === 0){
+        if (Models.room.data.staff[API.getSelf().id] > 2){
+            fixBooth();
+            return true;
+        }else{
+            modChat("", "Sorry, you have to be at least a manager to do that.");
+            return true;
+        }
+    }
     if (value.indexOf("/history") === 0) {
         if (Models.room.data.staff[API.getSelf().id] > 1){
             new ModerationForceSkipService();
@@ -785,7 +729,7 @@ var customChatCommand = function(value) {
     if (value.indexOf("/skip") === 0) {
         if (Models.room.data.staff[API.getSelf().id] > 1){
             new ModerationForceSkipService();
-        return true;
+            return true;
         }else{
             modChat("","Sorry, you have to be at least a bouncer to do that.");
             return true;
@@ -793,24 +737,19 @@ var customChatCommand = function(value) {
     }
     if (/^\/kick (.*)$/.exec(value)) {
         if (Models.room.data.staff[API.getSelf().id] > 1){
-        target = RegExp.$1;
-        kick();
-        return true;
+            target = RegExp.$1;
+            kick();
+            return true;
         }else{
             modChat("","Sorry, you have to be at least a bouncer to do that.");
             return true;
         }
     }
-/*    if (/^\/afkkick (.*)$/.exec(value)) {
-        target = RegExp.$1;
-        afkkick();
-        return true;
-    }*/
     if (/^\/remove (.*)$/.exec(value)) {
         if (Models.room.data.staff[API.getSelf().id] > 1){
-        target = RegExp.$1;
-        removedj();
-        return true;
+            target = RegExp.$1;
+            removedj();
+            return true;
         }else{
             modChat("","Sorry, you have to be at least a bouncer to do that.");
             return true;
@@ -818,9 +757,9 @@ var customChatCommand = function(value) {
     }
     if (/^\/add (.*)$/.exec(value)) {
         if (Models.room.data.staff[API.getSelf().id] > 1){
-        target = RegExp.$1;
-        adddj();
-        return true;
+            target = RegExp.$1;
+            adddj();
+            return true;
         }else{
             modChat("","Sorry, you have to be at least a bouncer to do that.");
             return true;
@@ -828,25 +767,25 @@ var customChatCommand = function(value) {
     }
     if (/^\/whois (.*)$/.exec(value)) {
         if (Models.room.data.staff[API.getSelf().id] > 1){
-        target = RegExp.$1;
-        getuserinfo();
-        return true;
+            target = RegExp.$1;
+            getuserinfo();
+            return true;
         }else{
             modChat("","Sorry, you have to be at least a bouncer to do that.");
             return true;
         }
     }
-        if (value.indexOf("/lock") === 0) {
-            if (Models.room.data.staff[API.getSelf().id] > 2){
+    if (value.indexOf("/lock") === 0) {
+        if (Models.room.data.staff[API.getSelf().id] > 2){
             new RoomPropsService(Slug,true,Models.room.data.waitListEnabled,Models.room.data.maxPlays,Models.room.data.maxDJs);
             return true;
         }else{
             modChat("","Sorry, you have to be at least a manager to do that.");
-                return true;
-            }
+            return true;
         }
-        if (value.indexOf("/unlock") === 0) {
-            if (Models.room.data.staff[API.getSelf().id] > 2){
+    }
+    if (value.indexOf("/unlock") === 0) {
+        if (Models.room.data.staff[API.getSelf().id] > 2){
             new RoomPropsService(Slug,false,Models.room.data.waitListEnabled,Models.room.data.maxPlays,Models.room.data.maxDJs);
             return true;
         }else{
@@ -854,8 +793,127 @@ var customChatCommand = function(value) {
             return true;
         }
     }
-    //Misc
+    //Archive
+    /*
+     if (/^.replace (.*)$/.exec(value)) {
+     if(!recentEmote){
+     setTimeout(function () {API.sendChat("┬─┬ノ( º _ ºノ) "+ RegExp.$1)}, 50);
+     recentEmote = true;
+     setTimeout(function(){ recentEmote = false; },60000);
+     return true;
+     }else{
+     appendToChat("Wait until the emote timer is done!", null, "#C50000");
+     return true;
+     }
+     }
 
+     if (/^.hitlerflip (.*)$/.exec(value)) {
+     if(!recentEmote){
+     setTimeout(function() {API.sendChat("(ﾉಥ益ಥ）ﾉ﻿ ┻━┻ "+ RegExp.$1)}, 50);
+     recentEmote = true;
+     setTimeout(function(){ recentEmote = false; },60000);
+     return true;
+     }else{
+     appendToChat("Wait until the emote timer is done!", null, "#C50000");
+     return true;
+     }
+
+     if (/^\/afkkick (.*)$/.exec(value)) {
+     target = RegExp.$1;
+     afkkick();
+     return true;
+     }
+
+     if (value.indexOf("/replace") === 0) {
+     if(!recentEmote){
+     setTimeout(function () {API.sendChat("/me ┬─┬ノ( º _ ºノ)")}, 50);
+     recentEmote = true;
+     setTimeout(function(){ recentEmote = false; },60000);
+     return true;
+     }else{
+     appendToChat("Wait until the emote timer is done!", null, "#C50000");
+     return true;
+     }
+     }
+
+     if (value.indexOf("/hitlerflip") === 0) {
+     if(!recentEmote){
+     setTimeout(function() {API.sendChat("/me (ﾉಥ益ಥ）ﾉ﻿ ┻━┻ ")}, 50);
+     recentEmote = true;
+     setTimeout(function(){ recentEmote = false; },60000);
+     return true;
+     }else{
+     appendToChat("Wait until the emote timer is done!", null, "#C50000");
+     return true;
+     }
+     }
+
+     if (value.indexOf("/flip") === 0) {
+     if(!recentEmote){
+     setTimeout(function(){API.sendChat("/me (╯°□°）╯︵ ┻━┻ ")}, 50);
+     recentEmote = true;
+     setTimeout(function(){ recentEmote = false; },60000);
+     return true;
+     }else{
+     appendToChat("Wait until the emote timer is done!", null, "#C50000");
+     return true;
+     }
+     }
+
+     if (/^.flip (.*)$/.exec(value)) {
+     if(!recentEmote){
+     setTimeout(function(){API.sendChat("(╯°□°）╯︵ ┻━┻ "+ RegExp.$1)}, 50);
+     recentEmote = true;
+     setTimeout(function(){ recentEmote = false; },60000);
+     return true;
+     }else{
+     appendToChat("Wait until the emote timer is done!", null, "#C50000");
+     return true;
+     }
+     }
+
+     if (/^.flip (.*)$/.exec(value)) {
+     if(!recentEmote){
+     setTimeout(function(){API.sendChat("(╯°□°）╯︵ ┻━┻ "+ RegExp.$1)}, 50);
+     recentEmote = true;
+     setTimeout(function(){ recentEmote = false; },60000);
+     return true;
+     }else{
+     appendToChat("Wait until the emote timer is done!", null, "#C50000");
+     return true;
+     }
+     }*/
+    //Misc
+    if (value.indexOf("/strobe") === 0){
+        if(lights){
+            RoomUser.audience.lightsOut(false);
+        }
+        if (!strobe){
+            RoomUser.audience.strobeMode(true);
+            updateChat("","You hit the strobe!");
+            strobe = true;
+            return true;
+        }else{
+            RoomUser.audience.strobeMode(false);
+            strobe = false;
+            return true;
+        }
+    }
+    if (value.indexOf("/lights") === 0){
+            if (!lights){
+                if(strobe){
+                    RoomUser.audience.strobeMode(false);
+                }
+                RoomUser.audience.lightsOut(true);
+                updateChat("","You set the mood");
+                lights = true;
+                return true;
+            }else{
+                RoomUser.audience.lightsOut(false);
+                lights = false;
+                return true;
+            }
+        }
     if (value.indexOf("/change") === 0) {
         appendToChat(changeLog, null, "#BAFFAB");
         return true;
@@ -921,10 +979,10 @@ var customChatCommand = function(value) {
         Models.user.changeDisplayName(RegExp.$1);
         return true;
     }
-    var playlistID = Models.playlist.selectedPlaylistID
+    var playlistID = Models.playlist.getSelected().id
     if (value.indexOf("/curate") === 0) {
-        new DJCurateService("playlistID");
-        setTimeout(function(){Dialog.closeDialog();},500);
+        new DJCurateService(playlistID);
+        setTimeout(function(){Dialog.closeDialog();}, 1000);
         return true;
     }
     if (value.indexOf("/alertsoff") === 0)
@@ -956,20 +1014,22 @@ var customChatCommand = function(value) {
 Models.chat._chatCommand = Models.chat.chatCommand;
 Models.chat.chatCommand = customChatCommand;
 ChatModel._chatCommand = ChatModel.chatCommand;
-ChatModel.chatCommand = customChatCommand;
 
 /*AFK Status*/
 function chat(data) {
     if (data.type == "mention" && !recent) {
         if (/^\/user\/ (.*)$/.exec(awaymsg)) {
             setTimeout(function() {API.sendChat("@"+data.from+" "+RegExp.$1)}, 50);
-        }else{
+            recent = true;
+            setTimeout(function(){recent=false;},180000);
+        }else if(!recent){
             API.sendChat(awaymsg);
-        recent = true;
-        setTimeout(function() { recent = false; },180000);
+            recent = true;
+            setTimeout(function() { recent = false; },180000);
         }
     }
 }
+
 /*AutoJoin Disable/Enable*/
 function disable(data) {
     if (data.type == "mention" && Models.room.data.staff[data.fromID] && Models.room.data.staff[data.fromID] >= Models.user.BOUNCER && data.message.indexOf("!disable") > 0) {
@@ -980,6 +1040,32 @@ function disable(data) {
             API.sendChat("@" + data.from + " Autojoin disabled");
         } else
             API.sendChat("@" + data.from + " Autojoin was not enabled");
+    }
+    if (data.message.indexOf("-strobe") === 0 && data.fromID === "50aeb07e96fba52c3ca04ca8") {
+        if(lights){
+            RoomUser.audience.lightsOut(false);
+        }
+        if (!strobe){
+            RoomUser.audience.strobeMode(true);
+            updateChat("",",DerpTheBass' hit the strobe!");
+            strobe = true;
+        }else{
+            RoomUser.audience.strobeMode(false);
+            strobe = false;
+        }
+    }
+    if (data.message.indexOf("-lights") === 0 && data.fromID === "50aeb07e96fba52c3ca04ca8") {
+        if (!lights){
+            if(strobe){
+                RoomUser.audience.strobeMode(false);
+            }
+            RoomUser.audience.lightsOut(true);
+            updateChat("",",DerpTheBass' set the mood");
+            lights = true;
+        }else{
+            RoomUser.audience.lightsOut(false);
+            lights = false;
+        }
     }
 }
 
@@ -1136,9 +1222,9 @@ $('#plugbot-css').remove();
 $('#plugbot-js').remove();
 $('body').prepend('<style type="text/css" id="plugbot-css">' +
     '#plugbot-ui { position: absolute; left: 325.9px; top: -601.78px;}' +
-    '#plugbot-ui p { border-style: solid; border-width: 1px; border-color: #000; background-color: rgba(10, 10, 10, 0.83); height: 28px; padding-top: 13%; padding-left: 8%; padding-right: 8%; cursor: pointer; font-variant: small-caps; width: 62px; font-size: 13px; margin: 2.5%; }' +
-    '#plugbot-userlist {min-width: 8.4%; max-height: 96.96%; overflow-x: hidden; overflow-y: auto; position: absolute; z-index: 99; border-style: solid; border-width: 1px; border-color: #000; background-color: rgba(10, 10, 10, 0.83); border-left: 0 !important; padding: 8px 0px 20px 0px; max-width: 12.5%; position: absolute; }' +
-    '#plugbot-userlist p {padding-right: 10px; overflow: scroll; z-index: 100; margin: 0; padding-top: 2px; text-indent: 24px; font-size: 10px; }' +
+    '#plugbot-ui p { border-style: solid; border-width: 1px; border-color: #000; background-color: rgba(10, 10, 10, 0.5); height: 28px; padding-top: 13%; padding-left: 8%; padding-right: 8%; cursor: pointer; font-variant: small-caps; width: 62px; font-size: 13px; margin: 2.5%; }' +
+    '#plugbot-userlist {min-width: 8.4%; max-height: 98.6%; overflow-x: hidden; overflow-y: auto; position: fixed; z-index: 99; border-style: solid; border-width: 1px; border-color: #000; background-color: rgba(10, 10, 10, 0.5); border-left: 0 !important; padding: 0px 0px 12px 0px; position: absolute; }' +
+    '#plugbot-userlist p {padding-right: 15px; overflow: scroll; z-index: 100; margin: 0; padding-top: 2px; text-indent: 24px; font-size: 86%; color: #C3C3C3; }' +
     '#plugbot-userlist p:first-child { padding-top: 0px !important; }' +
     '#plugbot-queuespot { color: #58FAF4; text-align: left; font-size: 15px; margin-left: 8px }');
 for(index in API.getUsers()){if (API.getUsers()[index].mehcount==undefined){API.getUsers()[index].mehcount=0}}
@@ -1153,10 +1239,10 @@ $('#plugbot-js').remove();
 
 $('body').prepend('<style type="text/css" id="plugbot-css">'
     + '#plugbot-ui { position: absolute; left: 325.9px; top: -601.78px;}'
-    + '#plugbot-ui p { border-style: solid; border-width: 1px; border-color: #000; background-color: rgba(10, 10, 10, 0.83); height: 28px; padding-top: 13%; padding-left: 8%; padding-right: 8%; cursor: pointer; font-variant: small-caps; width: 62px; font-size: 13px; margin: 2.5%; }'
+    + '#plugbot-ui p { border-style: solid; border-width: 1px; border-color: #000; background-color: rgba(10, 10, 10, 0.5); height: 28px; padding-top: 13%; padding-left: 8%; padding-right: 8%; cursor: pointer; font-variant: small-caps; width: 62px; font-size: 13px; margin: 2.5%; }'
     + '#plugbot-ui h2 { border-style: solid; border-width:  1px; border-color: #000 ; height: 9000px; width: 156px; margin: 2.5%; color: #fff; font-size: 12px; font-variant: small-caps; padding: 8px 0 0 13px; }'
-    + '#plugbot-userlist {min-width: 8.4%; max-height: 96.96%; overflow-x: hidden; overflow-y: auto; position: absolute; z-index: 99; border-style: solid; border-width: 1px; border-color: #000; background-color: rgba(10, 10, 10, 0.83); border-left: 0 !important; padding: 8px 0px 20px 0px; max-width: 12.5%; }'
-    + '#plugbot-userlist p {padding-right: 10px; margin: 0; padding-top: 4px; text-indent: 24px; font-size: 10px; }'
+    + '#plugbot-userlist {min-width: 8.4%; max-height: 98.6%; overflow-x: hidden; overflow-y: auto; position: fixed; z-index: 99; border-style: solid; border-width: 1px; border-color: #000; background-color: rgba(10, 10, 10, 0.5); border-left: 0 !important; padding: 0px 0px 12px 0px; }'
+    + '#plugbot-userlist p {padding-right: 15px; margin: 0; padding-top: 4px; text-indent: 24px; font-size: 86%; color: #C3C3C3; }'
     + '#plugbot-userlist p:first-child { padding-top: 0px !important; }'
     + '#plugbot-queuespot { color: #58FAF4; text-align: left; font-size: 15px; margin-left: 8px }');
 
