@@ -1128,7 +1128,7 @@ function repeatcheck(user) {
     for(var j=1; j<49;j++) {
         if (historylist[j].media.cid == currentID) {
             if ($.inArray(currentID, skippedsongs) == -1) {
-                systemChat("","This song is still in the history");
+                systemChat("","This song is still in the history ("+j+"/50)");
                 if (Models.room.data.staff[API.getSelf().id] > 1) {systemChat("", "Type /history to skip this");}
                 skippedsongs.push(currentID);
                 break;
@@ -1145,78 +1145,76 @@ function fixBooth(){
    var fixUser = boothFix.split(" ||| ", 5);
    firstUser = fixUser[0];
    secondUser = fixUser[1];
-if(!fixover){
-    if(boothFix != null){
-        if(boothFix.indexOf(" ||| ")>-1){
-            API.addEventListener(API.DJ_ADVANCE, boothAdvanceA);
-            API.addEventListener(API.DJ_ADVANCE, boothAdvanceB);
-            API.sendChat("/em Registering FixBooth: Replacing "+secondUser+" with "+firstUser);
-            if(DJName === secondUser){
-                new RoomPropsService(Slug,true,Models.room.data.waitListEnabled,Models.room.data.maxPlays,Models.room.data.maxDJs);
-                function boothAdvanceA(){
-                    setTimeout(function(){
-                        API.sendChat("/remove "+secondUser);
-                    },50);
-                    setTimeout(function(){
-                        API.sendChat("/add "+firstUser);
+    if (!fixover && boothFix != null) {
+        if (boothFix.indexOf(" ||| ") > -1) {
+            API.sendChat("/em Registering FixBooth: Replacing " + secondUser + " with " + firstUser);
+            if (DJName === secondUser) {
+                API.addEventListener(API.DJ_ADVANCE, boothAdvanceA);
+                new RoomPropsService(Slug, true, Models.room.data.waitListEnabled, Models.room.data.maxPlays, Models.room.data.maxDJs);
+                function boothAdvanceA() {
+                    setTimeout(function () {
+                        API.sendChat("/remove " + secondUser);
+                    }, 50);
+                    setTimeout(function () {
+                        API.sendChat("/add " + firstUser);
                     }, 100);
-                    setTimeout(function(){
-                        new RoomPropsService(Slug,false,Models.room.data.waitListEnabled,Models.room.data.maxPlays,Models.room.data.maxDJs);
-                    },150);
-                    setTimeout(function(){
+                    setTimeout(function () {
+                        new RoomPropsService(Slug, false, Models.room.data.waitListEnabled, Models.room.data.maxPlays, Models.room.data.maxDJs);
+                    }, 150);
+                    setTimeout(function () {
                         fixover = true;
                         API.removeEventListener(API.DJ_ADVANCE, boothAdvanceA);
-                    },200);
+                    }, 200);
                 }
-            }else{
-                function boothAdvanceB(){
-                if(DJName === secondUser){
-                    API.sendChat("true");
-                    API.addEventListener(API.DJ_ADVANCE, boothAdvanceC);
-                    new RoomPropsService(Slug,true,Models.room.data.waitListEnabled,Models.room.data.maxPlays,Models.room.data.maxDJs);
-                        function boothAdvanceC(){
-                        setTimeout(function(){
-                            API.sendChat("/remove "+secondUser);
-                        },50);
-                        setTimeout(function(){
-                            API.sendChat("/add "+firstUser);
-                        }, 100);
-                        setTimeout(function(){
-                            new RoomPropsService(Slug,false,Models.room.data.waitListEnabled,Models.room.data.maxPlays,Models.room.data.maxDJs);
-                        },150);
-                        setTimeout(function(){
-                            fixover = true;
-                            API.removeEventListener(API.DJ_ADVANCE, boothAdvanceC);
-                            API.removeEventListener(API.DJ_ADVANCE, boothAdvanceB);
-                        },200);
+            } else {
+                API.addEventListener(API.DJ_ADVANCE, boothAdvanceB);
+                function boothAdvanceB() {
+                    if (DJName === secondUser) {
+                        API.sendChat("true");
+                        API.addEventListener(API.DJ_ADVANCE, boothAdvanceC);
+                        new RoomPropsService(Slug, true, Models.room.data.waitListEnabled, Models.room.data.maxPlays, Models.room.data.maxDJs);
+                        function boothAdvanceC() {
+                            setTimeout(function () {
+                                API.sendChat("/remove " + secondUser);
+                            }, 50);
+                            setTimeout(function () {
+                                API.sendChat("/add " + firstUser);
+                            }, 100);
+                            setTimeout(function () {
+                                new RoomPropsService(Slug, false, Models.room.data.waitListEnabled, Models.room.data.maxPlays, Models.room.data.maxDJs);
+                            }, 150);
+                            setTimeout(function () {
+                                fixover = true;
+                                API.removeEventListener(API.DJ_ADVANCE, boothAdvanceC);
+                                API.removeEventListener(API.DJ_ADVANCE, boothAdvanceB);
+                            }, 200);
+                        }
                     }
                 }
             }
-            }
-          }else{
-            API.sendChat("/em Registering FixBooth: Replacing "+DJName+" with "+firstUser);
-            new RoomPropsService(Slug,true,Models.room.data.waitListEnabled,Models.room.data.maxPlays,Models.room.data.maxDJs);
+        } else {
+            API.sendChat("/em Registering FixBooth: Replacing " + DJName + " with " + firstUser);
+            new RoomPropsService(Slug, true, Models.room.data.waitListEnabled, Models.room.data.maxPlays, Models.room.data.maxDJs);
             API.addEventListener(API.DJ_ADVANCE, boothAdvanceD);
-            function boothAdvanceD(){
-               setTimeout(function(){
-                   new ModerationRemoveDJService(API.getDJs()[1].id);
-               },50);
-                setTimeout(function(){
-                    API.sendChat("/add "+firstUser);
-                },100);
-                setTimeout(function(){
-                    new RoomPropsService(Slug,false,Models.room.data.waitListEnabled,Models.room.data.maxPlays,Models.room.data.maxDJs);
-                },150);
-                setTimeout(function(){
+            function boothAdvanceD() {
+                setTimeout(function () {
+                    new ModerationRemoveDJService(API.getDJs()[1].id);
+                }, 50);
+                setTimeout(function () {
+                    API.sendChat("/add " + firstUser);
+                }, 100);
+                setTimeout(function () {
+                    new RoomPropsService(Slug, false, Models.room.data.waitListEnabled, Models.room.data.maxPlays, Models.room.data.maxDJs);
+                }, 150);
+                setTimeout(function () {
                     var boothFix = prompt("1st name is the user who will be put on deck. The 2nd name is optional and is the user who the first name will replace.", "User1 ||| User2");
                     var fixUser = boothFix.split(" ||| ", 5);
                     fixover = true;
                     API.removeEventListener(API.DJ_ADVANCE, boothAdvanceD);
-                },200);
+                }, 200);
             }
         }
     }
-}
 }
 function removedj(data) {
     if (Models.room.data.staff[API.getSelf().id] && Models.room.data.staff[API.getSelf().id] > 1) {
