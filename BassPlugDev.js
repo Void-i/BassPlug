@@ -1,5 +1,5 @@
-var version = "Running BassPlug Dev Version 5 <br>Type '/change' for the changes made.<br>Use '/cmd' to show all commands.";
-var changeLog = "Dev Version 5 - Added /lockskip (WIP) | More work on debug";
+var version = "Running BassPlug Dev Version 6 <br>Type '/change' for the changes made.<br>Use '/cmd' to show all commands.";
+var changeLog = "Dev Version 6 - Added strobe and lights buttons";
 appendToChat(version, null, "#58FAF4");
 
 
@@ -79,9 +79,11 @@ function initAPIListeners()
     });
     API.addEventListener(API.DJ_ADVANCE, function(){
         if(strobe){
+            $("#strobe-menu").click();
             strobe = false;
         }
         if(lights){
+            $("#lights-menu").click();
             lights = false;
         }
     });
@@ -120,9 +122,31 @@ function displayUI(data) {
                 '</div>'
         );
     }
+    $('#dj-console').prepend('<div id="strobe"></div>');
+    $('#strobe').append(
+        '<p id="strobe-menu">Strobe</p>' +
+         '<p id="lights-menu">Lights</p>' +
+            '</div>'
+    );
 }
 function initUIListeners()
 {
+    $("#strobe-menu") .hover(function(){
+            $(this).css("border-style", "ridge");
+            $(this).css("font-weight", "900");
+        },
+        function(){
+            $(this).css("border-style", "solid");
+            $(this).css("font-weight", "normal");
+        });
+    $("#lights-menu") .hover(function(){
+            $(this).css("border-style", "ridge");
+            $(this).css("font-weight", "900");
+        },
+        function(){
+            $(this).css("border-style", "solid");
+            $(this).css("font-weight", "normal");
+        });
     $("#plugbot-btn-menu") .hover(function(){
             $(this).css("background-color", "rgba(39, 39, 39, 0.5)");
         },
@@ -188,6 +212,48 @@ function initUIListeners()
         $("#plugbot-btn-animationoff").css("visibility", menu ? ("visible") : ("hidden"));
         $("#plugbot-btn-stream").css("visibility", menu ? ("visible") : ("hidden"));
         $("#plugbot-btn-alerts").css("visibility", menu ? ("visible") : ("hidden"));
+    });
+    $("#strobe-menu").on("click", function() {
+        $(this).css("color", !strobe ? "#00FFDE" : "#3B3B3B");
+        $(this).css("border-color", !strobe ? "#00FFDE" : "#3B3B3B");
+/*        $("#lights-menu").css("border-color", "#00FFDE");
+        $("#lights-menu").css("color", "#00FFDE");*/
+        if(!strobe){
+            if(lights){
+                $("#lights-menu").click();
+            }
+            RoomUser.audience.strobeMode(true);
+            updateChat("","You hit the strobe!");
+            strobe = true;
+        }else{
+            RoomUser.audience.strobeMode(false);
+            strobe = false;
+        }
+    });
+    $("#lights-menu").on("click", function() {
+        $(this).css("color", !lights ? "#00FFDE" : "#3B3B3B");
+        $(this).css("border-color", !lights ? "#00FFDE" : "#3B3B3B");
+        /*$("#strobe-menu").css("border-color", "#00FFDE");
+        $("#strobe-menu").css("color", "#00FFDE");*/
+        if(!lights){
+            if(strobe){
+                $("#strobe-menu").click();
+            }
+            RoomUser.audience.lightsOut(true);
+            updateChat("","You set the mood!");
+            lights = true;
+        }else{
+            RoomUser.audience.lightsOut(false);
+            lights = false;
+        }
+    });
+    $("#plugbot-btn-alerts").on("click", function() {
+        $(this).css("color", !alerts ? "#3FFF00" : "#ED1C24");
+        if(alerts){
+            API.sendChat("/alertsoff");
+        }else{
+            API.sendChat("/alertson");
+        }
     });
     $("#plugbot-btn-userlist").on("click", function() {
         userList = !userList;
@@ -919,34 +985,12 @@ var customChatCommand = function(value) {
      }*/
     //Misc
     if (value.indexOf("/strobe") === 0){
-        if(lights){
-            RoomUser.audience.lightsOut(false);
-        }
-        if (!strobe){
-            RoomUser.audience.strobeMode(true);
-            updateChat("","You hit the strobe!");
-            strobe = true;
-            return true;
-        }else{
-            RoomUser.audience.strobeMode(false);
-            strobe = false;
-            return true;
-        }
+       $("#strobe-menu").click();
+                return true;
     }
     if (value.indexOf("/lights") === 0){
-            if (!lights){
-                if(strobe){
-                    RoomUser.audience.strobeMode(false);
-                }
-                RoomUser.audience.lightsOut(true);
-                updateChat("","You set the mood");
-                lights = true;
+        $("#lights-menu").click();
                 return true;
-            }else{
-                RoomUser.audience.lightsOut(false);
-                lights = false;
-                return true;
-            }
         }
     if (value.indexOf("/change") === 0) {
         appendToChat(changeLog, null, "#BAFFAB");
@@ -1075,7 +1119,7 @@ function disable(data) {
         } else
             API.sendChat("@" + data.from + " Autojoin was not enabled");
     }
-    if (data.message.indexOf("-strobe") === 0 && data.fromID === "50aeb07e96fba52c3ca04ca8") {
+    if (data.message.indexOf("-strobe on") === 0 && data.fromID === "50aeb07e96fba52c3ca04ca8") {
         if(lights){
             RoomUser.audience.lightsOut(false);
         }
@@ -1083,12 +1127,20 @@ function disable(data) {
             RoomUser.audience.strobeMode(true);
             updateChat("",",DerpTheBass' hit the strobe!");
             strobe = true;
-        }else{
-            RoomUser.audience.strobeMode(false);
-            strobe = false;
+    }else{
+        updateChat("Strobe is already on!");
         }
     }
-    if (data.message.indexOf("-lights") === 0 && data.fromID === "50aeb07e96fba52c3ca04ca8") {
+        if (data.message.indexOf("-strobe off") === 0 && data.fromID === "50aeb07e96fba52c3ca04ca8") {
+            if(lights){
+                RoomUser.audience.lightsOut(false);
+            }
+            if (strobe){
+                RoomUser.audience.strobeMode(false);
+                strobe = false;
+            }
+        }
+    if (data.message.indexOf("-lights on") === 0 && data.fromID === "50aeb07e96fba52c3ca04ca8") {
         if (!lights){
             if(strobe){
                 RoomUser.audience.strobeMode(false);
@@ -1096,13 +1148,18 @@ function disable(data) {
             RoomUser.audience.lightsOut(true);
             updateChat("",",DerpTheBass' set the mood");
             lights = true;
-        }else{
-            RoomUser.audience.lightsOut(false);
-            lights = false;
         }
     }
+if (data.message.indexOf("-lights off") === 0 && data.fromID === "50aeb07e96fba52c3ca04ca8") {
+    if (lights){
+        if(strobe){
+            RoomUser.audience.strobeMode(false);
+        }
+        RoomUser.audience.lightsOut(false);
+        lights = false;
+    }
 }
-
+}
 /*Moderation - Kick*/
 function kick(data) {
     if (Models.room.data.staff[API.getSelf().id] && Models.room.data.staff[API.getSelf().id] > 1) {
@@ -1207,8 +1264,6 @@ function fixBooth(){
                     new RoomPropsService(Slug, false, Models.room.data.waitListEnabled, Models.room.data.maxPlays, Models.room.data.maxDJs);
                 }, 150);
                 setTimeout(function () {
-                    var boothFix = prompt("1st name is the user who will be put on deck. The 2nd name is optional and is the user who the first name will replace.", "User1 ||| User2");
-                    var fixUser = boothFix.split(" ||| ", 5);
                     fixover = true;
                     API.removeEventListener(API.DJ_ADVANCE, boothAdvanceD);
                 }, 200);
@@ -1334,6 +1389,9 @@ function getuserinfo(data) {
 $('#plugbot-css').remove();
 $('#plugbot-js').remove();
 $('body').prepend('<style type="text/css" id="plugbot-css">' +
+    '#strobe {position: absolute; top: 45px; left: 18px;}' +
+    '#strobe-menu {color:#3B3B3B ;font-variant: small-caps;font-size: 12px;cursor: pointer;padding: 2px 2px 2px 2px; border-style: solid; border-width: 1px; border-radius: 4px; border-color: #3B3B3B; margin-bottom: 1px; margin-top: 3px;}' +
+    '#lights-menu {color:#3B3B3B ;font-variant: small-caps;font-size: 12px;cursor: pointer;padding: 2px 2px 2px 2px; border-style: solid; border-width: 1px; border-radius: 4px; border-color: #3B3B3B; margin-bottom: 1px; margin-top: 3px;}' +
     '#plugbot-ui { position: absolute; left: 325.9px; top: -601.78px;}' +
     '#plugbot-ui p { border-style: solid; border-width: 1px; border-color: #000; background-color: rgba(10, 10, 10, 0.5); height: 28px; padding-top: 13%; padding-left: 8%; padding-right: 8%; cursor: pointer; font-variant: small-caps; width: 62px; font-size: 13px; margin: 2.5%; }' +
     '#plugbot-userlist {min-width: 8.4%; max-height: 98.6%; overflow-x: hidden; overflow-y: auto; position: fixed; z-index: 99; border-style: solid; border-width: 1px; border-color: #000; background-color: rgba(10, 10, 10, 0.5); border-left: 0 !important; padding: 0px 0px 12px 0px; position: absolute; }' +
@@ -1351,6 +1409,9 @@ $('#plugbot-js').remove();
 
 
 $('body').prepend('<style type="text/css" id="plugbot-css">'
+    + '#strobe {position: absolute; top: 56px; left: 18px; }'
+    + '#strobe-menu {color:#3B3B3B; font-variant: small-caps; font-size: 12px; cursor: pointer; padding: 2px 2px 2px 2px;  border-style: solid; border-width: 1px; border-radius: 4px; border-color: #3B3B3B; margin-bottom: 1px; margin-top: 3px;}'
+    + '#lights-menu {color:#3B3B3B; font-variant: small-caps; font-size: 12px; cursor: pointer; padding: 2px 2px 2px 2px;  border-style: solid; border-width: 1px; border-radius: 4px; border-color: #3B3B3B; margin-bottom: 1px; margin-top: 3px;}'
     + '#plugbot-ui { position: absolute; left: 325.9px; top: -601.78px;}'
     + '#plugbot-ui p { border-style: solid; border-width: 1px; border-color: #000; background-color: rgba(10, 10, 10, 0.5); height: 28px; padding-top: 13%; padding-left: 8%; padding-right: 8%; cursor: pointer; font-variant: small-caps; width: 62px; font-size: 13px; margin: 2.5%; }'
     + '#plugbot-ui h2 { border-style: solid; border-width:  1px; border-color: #000 ; height: 9000px; width: 156px; margin: 2.5%; color: #fff; font-size: 12px; font-variant: small-caps; padding: 8px 0 0 13px; }'
