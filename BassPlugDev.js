@@ -1,5 +1,5 @@
-var version = "Running BassPlug Dev Version 6 <br>Type '/change' for the changes made.<br>Use '/cmd' to show all commands.";
-var changeLog = "Dev Version 6 - Added strobe and lights buttons";
+var version = "Running BassPlug Dev Version 7 <br>Type '/change' for the changes made.<br>Use '/cmd' to show all commands.";
+var changeLog = "Dev Version 7 - Fixed the alerts button bug";
 appendToChat(version, null, "#58FAF4");
 
 
@@ -245,14 +245,6 @@ function initUIListeners()
         }else{
             RoomUser.audience.lightsOut(false);
             lights = false;
-        }
-    });
-    $("#plugbot-btn-alerts").on("click", function() {
-        $(this).css("color", !alerts ? "#3FFF00" : "#ED1C24");
-        if(alerts){
-            API.sendChat("/alertsoff");
-        }else{
-            API.sendChat("/alertson");
         }
     });
     $("#plugbot-btn-userlist").on("click", function() {
