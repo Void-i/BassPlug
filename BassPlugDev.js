@@ -1,7 +1,23 @@
-var version = "Running BassPlug Dev Version 7 <br>Type '/change' for the changes made.<br>Use '/cmd' to show all commands.";
-var changeLog = "Dev Version 7 - Fixed the alerts button bug";
+var version = "Running BassPlug Dev Version 9.00 <br>Type '/change' for the changes made.<br>Use '/cmd' to show all commands.";
+var changeLog = "Dev Version 9.00 - Fixed the alerts button bug";
 appendToChat(version, null, "#58FAF4");
 
+if(localStorage.getItem("bassplug") != "yes"){
+    var bassplugOptions = new Object();
+    bassplugOptions.autoWoot = true;
+    bassplugOptions.autoJoin = false;
+    bassplugOptions.autoRespond = false;
+    bassplugOptions.userlist = true;
+    bassplugOptions.hideVideo = false;
+    bassplugOptions.alerts = true;
+    bassplugOptions.stream = true;
+    bassplugOptions.recent = false;
+    bassplugOptions.menu = true;
+    bassplugOptions.debug = false;
+    bassplugOptions.strobe = false;
+    bassplugOptions.lights = false;
+    bassplugOptions.awayMessage = "";
+}
 
 var recent = false,
     awaymsg = "",
@@ -335,10 +351,10 @@ function addGlobalStyle(css){
     addGlobalStyle('#meta-frame, #meta-frame {width: 349px;}');
     addGlobalStyle('.frame-background, .frame-background {opacity: 0.83;}');
 //Changes the color of user's names in chat
-    addGlobalStyle('.chat-from-featureddj, .chat-from-featureddj {color: #00C4FF;}');
-    addGlobalStyle('.chat-from-manager, .chat-from-manager {color: #16BF00;}');
-    addGlobalStyle('.chat-from-cohost, .chat-from-cohost {color: #FF4000;}');
-    addGlobalStyle('.chat-from-host, .chat-from-host {color: #FF0004;}');
+    addGlobalStyle('.chat-from-featureddj, .chat-from-featureddj {color: #00C4FF !important;}');
+    addGlobalStyle('.chat-from-manager, .chat-from-manager {color: #16BF00 !important;}');
+    addGlobalStyle('.chat-from-cohost, .chat-from-cohost {color: #FF4000 !important;}');
+    addGlobalStyle('.chat-from-host, .chat-from-host {color: #FF0004 !important;}');
 //Changes the icons and background color
     addGlobalStyle('.chat-host, .chat-host {background-image: url(http://i.imgur.com/p2FzDNP.png); no repeat 0 5px);}');
     addGlobalStyle('.chat-cohost, .chat-cohost {background-image: url(http://i.imgur.com/Vf1KvPO.png); no repeat 0 5px;}');
@@ -1049,7 +1065,7 @@ var customChatCommand = function(value) {
         Models.user.changeDisplayName(RegExp.$1);
         return true;
     }
-    var playlistID = Models.playlist.getSelected().id
+    var playlistID = Models.playlist.getSelected().id;
     if (value.indexOf("/curate") === 0) {
         new DJCurateService(playlistID);
         setTimeout(function(){Dialog.closeDialog();}, 1000);
@@ -1381,9 +1397,9 @@ function getuserinfo(data) {
 $('#plugbot-css').remove();
 $('#plugbot-js').remove();
 $('body').prepend('<style type="text/css" id="plugbot-css">' +
-    '#strobe {position: absolute; top: 45px; left: 18px;}' +
-    '#strobe-menu {color:#3B3B3B ;font-variant: small-caps;font-size: 12px;cursor: pointer;padding: 2px 2px 2px 2px; border-style: solid; border-width: 1px; border-radius: 4px; border-color: #3B3B3B; margin-bottom: 1px; margin-top: 3px;}' +
-    '#lights-menu {color:#3B3B3B ;font-variant: small-caps;font-size: 12px;cursor: pointer;padding: 2px 2px 2px 2px; border-style: solid; border-width: 1px; border-radius: 4px; border-color: #3B3B3B; margin-bottom: 1px; margin-top: 3px;}' +
+    '#strobe {position: absolute; top: 66px; left: 18px;}' +
+    '#strobe-menu {position: absolute; color:#3B3B3B; font-variant: small-caps;font-size: 12px;cursor: pointer;padding: 2px 2px 2px 2px; border-style: solid; border-width: 1px; border-radius: 4px; border-color: #3B3B3B; margin-bottom: 1px; margin-top: 3px;}' +
+    '#lights-menu {position: absolute; left: 240px; color:#3B3B3B; font-variant: small-caps;font-size: 12px;cursor: pointer;padding: 2px 2px 2px 2px; border-style: solid; border-width: 1px; border-radius: 4px; border-color: #3B3B3B; margin-bottom: 1px; margin-top: 3px;}' +
     '#plugbot-ui { position: absolute; left: 325.9px; top: -601.78px;}' +
     '#plugbot-ui p { border-style: solid; border-width: 1px; border-color: #000; background-color: rgba(10, 10, 10, 0.5); height: 28px; padding-top: 13%; padding-left: 8%; padding-right: 8%; cursor: pointer; font-variant: small-caps; width: 62px; font-size: 13px; margin: 2.5%; }' +
     '#plugbot-userlist {min-width: 8.4%; max-height: 98.6%; overflow-x: hidden; overflow-y: auto; position: fixed; z-index: 99; border-style: solid; border-width: 1px; border-color: #000; background-color: rgba(10, 10, 10, 0.5); border-left: 0 !important; padding: 0px 0px 12px 0px; position: absolute; }' +
@@ -1401,9 +1417,9 @@ $('#plugbot-js').remove();
 
 
 $('body').prepend('<style type="text/css" id="plugbot-css">'
-    + '#strobe {position: absolute; top: 56px; left: 18px; }'
-    + '#strobe-menu {color:#3B3B3B; font-variant: small-caps; font-size: 12px; cursor: pointer; padding: 2px 2px 2px 2px;  border-style: solid; border-width: 1px; border-radius: 4px; border-color: #3B3B3B; margin-bottom: 1px; margin-top: 3px;}'
-    + '#lights-menu {color:#3B3B3B; font-variant: small-caps; font-size: 12px; cursor: pointer; padding: 2px 2px 2px 2px;  border-style: solid; border-width: 1px; border-radius: 4px; border-color: #3B3B3B; margin-bottom: 1px; margin-top: 3px;}'
+    + '#strobe {position: absolute; top: 66px; left: 18px; }'
+    + '#strobe-menu {position: absolute; color:#3B3B3B; font-variant: small-caps; font-size: 12px; cursor: pointer; padding: 2px 2px 2px 2px;  border-style: solid; border-width: 1px; border-radius: 4px; border-color: #3B3B3B; margin-bottom: 1px; margin-top: 3px;}'
+    + '#lights-menu {position: absolute; left: 240px; color:#3B3B3B; font-variant: small-caps; font-size: 12px; cursor: pointer; padding: 2px 2px 2px 2px;  border-style: solid; border-width: 1px; border-radius: 4px; border-color: #3B3B3B; margin-bottom: 1px; margin-top: 3px;}'
     + '#plugbot-ui { position: absolute; left: 325.9px; top: -601.78px;}'
     + '#plugbot-ui p { border-style: solid; border-width: 1px; border-color: #000; background-color: rgba(10, 10, 10, 0.5); height: 28px; padding-top: 13%; padding-left: 8%; padding-right: 8%; cursor: pointer; font-variant: small-caps; width: 62px; font-size: 13px; margin: 2.5%; }'
     + '#plugbot-ui h2 { border-style: solid; border-width:  1px; border-color: #000 ; height: 9000px; width: 156px; margin: 2.5%; color: #fff; font-size: 12px; font-variant: small-caps; padding: 8px 0 0 13px; }'
