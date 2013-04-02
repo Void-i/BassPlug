@@ -617,10 +617,6 @@ var customChatCommand = function(value) {
         return true;
     }
 //Response commands
-    if (value.indexOf("^") === 0) {
-        API.sendChat("↑");
-        return true;
-    }
     if (/^.wut (.*)$/.exec(value)) {
         if(!recentEmote){
             setTimeout(function() {API.sendChat(RegExp.$1+" ಠ_ಠ")}, 50);
@@ -645,7 +641,7 @@ var customChatCommand = function(value) {
     }
     if (/^.throw (.*)$/.exec(value)) {
         if(!recentEmote){
-            setTimeout(function() {API.sendChat(RegExp.$1+"/me (ノಠ益ಠ)ノ彡 ")}, 50);
+            setTimeout(function() {API.sendChat(RegExp.$1+" (ノಠ益ಠ)ノ彡 ")}, 50);
             recentEmote = true;
             setTimeout(function(){ recentEmote = false; },60000);
             return true;
