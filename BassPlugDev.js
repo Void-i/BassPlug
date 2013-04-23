@@ -1,5 +1,5 @@
-var version = "Running BassPlug Dev Version 10 <br>Type '/change' for the changes made.<br>Use '/cmd' to show all commands.";
-var changeLog = "Dev Version 10 - Commands that target a user use @mention now | Added a /fan and /unfan command | Aligned the strobe and lights buttons";
+var version = "Running BassPlug Dev Version 11 <br>Type '/change' for the changes made.<br>Use '/cmd' to show all commands.";
+var changeLog = "Dev Version 11 - Added /edit on and /edit off | Sort of fixed the stream button (not too concerned because it will be fully fixed when storage is implimented)";
 appendToChat(version, null, "#58FAF4");
 
 if(localStorage.getItem("bassplug") !== "yes"){
@@ -11,13 +11,17 @@ if(localStorage.getItem("bassplug") !== "yes"){
     bassplugOptions.hideVideo = false;
     bassplugOptions.alerts = true;
     bassplugOptions.stream = true;
-    bassplugOptions.recent = false;
     bassplugOptions.menu = true;
     bassplugOptions.debug = false;
     bassplugOptions.strobe = false;
     bassplugOptions.lights = false;
     bassplugOptions.awayMessage = "";
 }
+
+bassPlug = {};
+bassPlug.mehcount = 0;
+bassPlug.recent = false;
+bassPlug.recentEmotes = false;
 
 var recent = false,
     awaymsg = "",
@@ -27,15 +31,19 @@ var recent = false,
     userList = true,
     autorespond = false,
     recentEmote = false,
-    afkdisable = false,
-    stream = true,
     animation = true,
     menu = true,
     alerts = true,
     strobe = false,
-    lights = false,
-    mehcount = 0;
-debug = false;
+    debug = false,
+    lights = false;
+    if (DB.settings.streamDisabled = false) {
+        var streambuttoncolor = "#3FFF00";
+        var stream = true;
+    }else{
+        var streambuttoncolor = "#ED1C24";
+        var stream = false;
+    }
 
 function initAPIListeners()
 {
@@ -117,7 +125,7 @@ function displayUI(data) {
                 '<p id="plugbot-btn-hidevideo" style="color:#ED1C24">Hide Video</p>' +
                 '<p id="plugbot-btn-userlist" style="color:#3FFF00">Userlist</p>' +
                 '<p id="plugbot-btn-animationoff" style="color:#3FFF00">Animation</p>' +
-                '<p id="plugbot-btn-stream" style="color:#3FFF00">Stream</p>' +
+                '<p id="plugbot-btn-stream" style="color:streambuttoncolor">Stream</p>' +
                 '<p id="plugbot-btn-alerts" style="color:#3FFF00">Alerts</p>' +
                 '<p id="plugbot-btn-autorespond" style="color:#ED1C24">Respond</p>' +
                 '</div>'
@@ -133,7 +141,7 @@ function displayUI(data) {
                 '<p id="plugbot-btn-userlist" style="color:#3FFF00">Userlist</p>' +
                 '<p id="plugbot-btn-autorespond" style="color:#ED1C24">Respond</p>' +
                 '<p id="plugbot-btn-animationoff" style="color:#3FFF00">Animation</p>' +
-                '<p id="plugbot-btn-stream" style="color:#3FFF00">Stream</p>' +
+                '<p id="plugbot-btn-stream" style="color:streambuttoncolor">Stream</p>' +
                 '<p id="plugbot-btn-alerts" style="color:#3FFF00">Alerts</p>' +
                 '</div>'
         );
@@ -585,6 +593,8 @@ var customChatCommand = function(value) {
             "<strong>'/ref'</strong> - <em>refreshes the video/soundcloud</em><br>" +
             "<strong>'/alertsoff'</strong> - <em>turns curate notices and user join/leave messages off</em><br>" +
             "<strong>'/alertson'</strong> - <em>turns curate notices and user join/leave messages on</em><br>" +
+            "<strong>'/edit on'</strong> - <em>Turns on editing mode, it will allow you to edit mostly anything on the page</em><br>" +
+            "<strong>'/edit off'</strong> - <em>Turns off editing mode</em><br>" +
             "<strong>'/getpos'</strong> - <em>get current waitlist position</em><br>" +
             "<strong>'/version'</strong> - <em>displays version number</em><br>", null, "#F700FA");
         if (Models.room.data.staff[API.getSelf().id] && Models.room.data.staff[API.getSelf().id] > 1) {
@@ -593,7 +603,7 @@ var customChatCommand = function(value) {
                 "<strong>'/kick @(username)'</strong> - <em>kicks targeted user</em><br>" +
                 "<strong>'/add @(username)'</strong> - <em>adds targeted user to dj booth/waitlist</em><br>" +
                 "<strong>'/remove @(username)'</strong> - <em>removes targeted user from dj booth/waitlist</em><br>" +
-                "<strong>'/whois @(username)'</strong> - <em>gives general information about user</em><br>", null, "#FF000");
+                "<strong>'/whois @(username)'</strong> - <em>gives general information about user</em><br>", null, "#FF0000");
             if(Models.room.data.staff[API.getSelf().id] && Models.room.data.staff[API.getSelf().id] > 2) {
                 appendToChat("<strong>'/lock'</strong> - <em>locks the DJ booth</em><br>" +
                     "<strong>'/unlock'</strong> - <em>unlocks the DJ booth</em><br>" +
@@ -907,6 +917,14 @@ var customChatCommand = function(value) {
     }
     if (value.indexOf("/strobe") === 0){
         $("#strobe-menu").click();
+        return true;
+    }
+    if (value.indexOf("/edit on") === 0){
+        document.body.contentEditable=true;
+        return true;
+    }
+    if (value.indexOf("/edit off") === 0){
+        document.body.contentEditable=false;
         return true;
     }
     if (value.indexOf("/lights") === 0){
@@ -1333,6 +1351,7 @@ function getuserinfo(data) {
 }
 
 /*init*/
+$('#plugbot-userlist').remove();
 $('#plugbot-css').remove();
 $('#plugbot-js').remove();
 $('body').prepend('<style type="text/css" id="plugbot-css">' +
