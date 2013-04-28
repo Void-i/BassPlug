@@ -1,5 +1,5 @@
-var version = "Running BassPlug Dev Version 11 <br>Type '/change' for the changes made.<br>Use '/cmd' to show all commands.";
-var changeLog = "Dev Version 11 - Added /edit on and /edit off | Sort of fixed the stream button (not too concerned because it will be fully fixed when storage is implimented)";
+var version = "Running BassPlug Dev Version 12 <br>Type '/change' for the changes made.<br>Use '/cmd' to show all commands.";
+var changeLog = "Dev Version 12 - Fixed problems with HTML tags being used in names | Changed some CSS";
 appendToChat(version, null, "#58FAF4");
 
 if(localStorage.getItem("bassplug") !== "yes"){
@@ -76,8 +76,9 @@ function initAPIListeners()
         }
     });
     API.addEventListener(API.USER_JOIN, function(user) {
+        username = user.username.replace(/</g, '&lt;');
         if (alerts){
-            appendToChat(user.username + " joined the room", null, "#A9D033");
+            appendToChat(username + " joined the room", null, "#A9D033");
             if(debug){
                 console.log("[BassPlug] Displaying join alert");
             }
@@ -92,6 +93,7 @@ function initAPIListeners()
         }
     });
     API.addEventListener(API.USER_LEAVE, function(user) {
+        username = user.username.replace(/</g, '&lt;');
         if (alerts){
             appendToChat(user.username + " left the room", null, "#A9D033");
         }
@@ -240,8 +242,6 @@ function initUIListeners()
     $("#strobe-menu").on("click", function() {
         $(this).css("color", !strobe ? "#00FFDE" : "#3B3B3B");
         $(this).css("border-color", !strobe ? "#00FFDE" : "#3B3B3B");
-        /*        $("#lights-menu").css("border-color", "#00FFDE");
-         $("#lights-menu").css("color", "#00FFDE");*/
         if(!strobe){
             if(lights){
                 $("#lights-menu").click();
@@ -257,8 +257,6 @@ function initUIListeners()
     $("#lights-menu").on("click", function() {
         $(this).css("color", !lights ? "#00FFDE" : "#3B3B3B");
         $(this).css("border-color", !lights ? "#00FFDE" : "#3B3B3B");
-        /*$("#strobe-menu").css("border-color", "#00FFDE");
-         $("#strobe-menu").css("color", "#00FFDE");*/
         if(!lights){
             if(strobe){
                 $("#strobe-menu").click();
@@ -420,7 +418,7 @@ function populateUserlist()
 
 function appendUser(user)
 {
-    var username = user.username;
+    var username = user.username.replace(/</g, '&lt;');;
     var permission = user.permission;
     if (user.admin) {
         permission = 99;
@@ -1057,7 +1055,7 @@ function fan(data) {
     if (usernames.indexOf(target) < 0) log("user not found");
     else {
         listlocation = usernames.indexOf(target);
-        new UserFanService("fan", id[listlocation]);
+        new UserFanService(true, id[listlocation]);
     }
 }
 
@@ -1070,7 +1068,7 @@ function unfan(data) {
     if (usernames.indexOf(target) < 0) log("user not found");
     else {
         listlocation = usernames.indexOf(target);
-        new UserFanService("unfan", id[listlocation]);
+        new UserFanService(false, id[listlocation]);
     }
 }
 /*AutoJoin Disable/Enable*/
@@ -1353,9 +1351,9 @@ function getuserinfo(data) {
 /*init*/
 $('#plugbot-userlist').remove();
 $('#plugbot-css').remove();
-$('#plugbot-js').remove();
+$('#BassPlugDev-js').remove();
 $('body').prepend('<style type="text/css" id="plugbot-css">' +
-    '#strobe {position: absolute; top: 66px;}' +
+    '#strobe {position: absolute; top: 70px;}' +
     '#strobe-menu {position: absolute; color:#3B3B3B; font-variant: small-caps;font-size: 12px;cursor: pointer;padding: 2px 2px 2px 2px; border-style: solid; border-width: 1px; border-radius: 4px; border-color: #3B3B3B; margin-bottom: 1px; margin-top: 3px;}' +
     '#lights-menu {position: absolute; left: 240px; color:#3B3B3B; font-variant: small-caps;font-size: 12px;cursor: pointer;padding: 2px 2px 2px 2px; border-style: solid; border-width: 1px; border-radius: 4px; border-color: #3B3B3B; margin-bottom: 1px; margin-top: 3px;}' +
     '#plugbot-ui { position: absolute; left: 325.9px; top: -601.78px;}' +
@@ -1371,11 +1369,11 @@ for(index in API.getUsers()){if (API.getUsers()[index].mehcount==undefined){API.
 
 $('#plugbot-userlist').remove();
 $('#plugbot-css').remove();
-$('#plugbot-js').remove();
+$('#BassPlugDev-js').remove();
 
 
 $('body').prepend('<style type="text/css" id="plugbot-css">'
-    + '#strobe {position: absolute; top: 66px;}'
+    + '#strobe {position: absolute; top: 70px;}'
     + '#strobe-menu {position: absolute; color:#3B3B3B; font-variant: small-caps; left: 10px; font-size: 12px; cursor: pointer; padding: 2px 2px 2px 2px;  border-style: solid; border-width: 1px; border-radius: 4px; border-color: #3B3B3B; margin-bottom: 1px; margin-top: 3px;}'
     + '#lights-menu {position: absolute; left: 240px; color:#3B3B3B; left: 268px; font-variant: small-caps; font-size: 12px; cursor: pointer; padding: 2px 2px 2px 2px;  border-style: solid; border-width: 1px; border-radius: 4px; border-color: #3B3B3B; margin-bottom: 1px; margin-top: 3px;}'
     + '#plugbot-ui { position: absolute; left: 325.9px; top: -601.78px;}'
