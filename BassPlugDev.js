@@ -95,7 +95,7 @@ function initAPIListeners()
     API.addEventListener(API.USER_LEAVE, function(user) {
         username = user.username.replace(/</g, '&lt;');
         if (alerts){
-            appendToChat(user.username + " left the room", null, "#A9D033");
+            appendToChat(username + " left the room", null, "#A9D033");
         }
         if (userList)
             populateUserlist();
