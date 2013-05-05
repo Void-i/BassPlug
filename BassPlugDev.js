@@ -1,5 +1,5 @@
-var version = "Running BassPlug Dev Version 12 <br>Type '/change' for the changes made.<br>Use '/cmd' to show all commands.";
-var changeLog = "Dev Version 12 - Fixed problems with HTML tags being used in names | Changed some CSS";
+var version = "Running BassPlug Dev Version 13 <br>Type '/change' for the changes made.<br>Use '/cmd' to show all commands.";
+var changeLog = "Dev Version 13 - Testing a change in the history check which should make it more accurate";
 appendToChat(version, null, "#58FAF4");
 
 if(localStorage.getItem("bassplug") !== "yes"){
@@ -1143,9 +1143,10 @@ Models.history.load();
 var skippedsongs = [];
 API.addEventListener(API.DJ_UPDATE, repeatcheck);
 function repeatcheck(user) {
+    Models.history.load();
     var historylist=Models.history.data;
     var currentID=Models.room.data.media.cid;
-    for(var j=1; j<49;j++) {
+    for(var j=1; j<50;j++) {
         if (historylist[j].media.cid == currentID) {
             if ($.inArray(currentID, skippedsongs) == -1) {
                 systemChat("","This song is still in the history ("+j+"/50)");
