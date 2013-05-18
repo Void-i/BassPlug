@@ -1,5 +1,5 @@
-var version = "Running BassPlug Dev Version 13 <br>Type '/change' for the changes made.<br>Use '/cmd' to show all commands.";
-var changeLog = "Dev Version 13 - Testing a change in the history check which should make it more accurate";
+var version = "Running BassPlug Dev Version 14 <br>Type '/change' for the changes made.<br>Use '/cmd' to show all commands.";
+var changeLog = "Dev Version 14 - Changed the history skip";
 appendToChat(version, null, "#58FAF4");
 
 if(localStorage.getItem("bassplug") !== "yes"){
@@ -838,6 +838,19 @@ var customChatCommand = function(value) {
             return true;
         }
     }
+    if (value.indexOf("/skip history") === 0) {
+        if (Models.room.data.staff[API.getSelf().id] > 1){
+            Models.chat.sendChat("@"+Models.room.getDJs()[0]+" Skipped because: your song was in the history");
+            setTimeout(function(){
+                new ModerationForceSkipService();
+            },1000);
+            }
+            return true;
+        }else{
+            modChat("","Sorry, you have to be at least a bouncer to do that.");
+            return true;
+        }
+    }
     if (/^\/kick @(.*)$/.exec(value)) {
         if (Models.room.data.staff[API.getSelf().id] > 1){
             reg = RegExp.$1;
@@ -1150,7 +1163,7 @@ function repeatcheck(user) {
         if (historylist[j].media.cid == currentID) {
             if ($.inArray(currentID, skippedsongs) == -1) {
                 systemChat("","This song is still in the history ("+j+"/50)");
-                if (Models.room.data.staff[API.getSelf().id] > 1) {systemChat("", "Type /history to skip this");}
+                if (Models.room.data.staff[API.getSelf().id] > 1) {systemChat("", "Type /skip history to skip this");}
                 skippedsongs.push(currentID);
                 break;
             }
