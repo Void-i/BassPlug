@@ -844,7 +844,6 @@ var customChatCommand = function(value) {
             setTimeout(function(){
                 new ModerationForceSkipService();
             },1000);
-            }
             return true;
         }else{
             modChat("","Sorry, you have to be at least a bouncer to do that.");
