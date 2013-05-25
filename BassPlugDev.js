@@ -1,5 +1,5 @@
-var version = "Running BassPlug Dev Version 14 <br>Type '/change' for the changes made.<br>Use '/cmd' to show all commands.";
-var changeLog = "Dev Version 14 - Changed the history skip";
+var version = "Running BassPlug Dev Version 15 <br>Type '/change' for the changes made.<br>Use '/cmd' to show all commands.";
+var changeLog = "Dev Version 15 - Changed the /skip history to /rskip history";
 appendToChat(version, null, "#58FAF4");
 
 if(localStorage.getItem("bassplug") !== "yes"){
@@ -36,14 +36,15 @@ var recent = false,
     alerts = true,
     strobe = false,
     debug = false,
-    lights = false;
-    if (DB.settings.streamDisabled = false) {
-        var streambuttoncolor = "#3FFF00";
-        var stream = true;
-    }else{
-        var streambuttoncolor = "#ED1C24";
-        var stream = false;
-    }
+    lights = false,
+    emoji = true;
+if (DB.settings.streamDisabled = false) {
+    var streambuttoncolor = "#3FFF00";
+    var stream = true;
+}else{
+    var streambuttoncolor = "#ED1C24";
+    var stream = false;
+}
 
 function initAPIListeners()
 {
@@ -118,21 +119,6 @@ function initAPIListeners()
 
 function displayUI(data) {
 
-    if (Models.room.data.staff[API.getSelf().id] >= Models.user.BOUNCER) {
-        $('#user-container').prepend('<div id="plugbot-ui"></div>');
-        $('#plugbot-ui').append(
-            '<p id="plugbot-btn-menu" style="color:#58FAF4; ">BassPlug</p>' +
-                '<div style="width: 100%; visibility:visible">' +
-                '<p id="plugbot-btn-woot" style="color:#3FFF00">Autowoot</p>' +
-                '<p id="plugbot-btn-hidevideo" style="color:#ED1C24">Hide Video</p>' +
-                '<p id="plugbot-btn-userlist" style="color:#3FFF00">Userlist</p>' +
-                '<p id="plugbot-btn-animationoff" style="color:#3FFF00">Animation</p>' +
-                '<p id="plugbot-btn-stream" style="color:streambuttoncolor">Stream</p>' +
-                '<p id="plugbot-btn-alerts" style="color:#3FFF00">Alerts</p>' +
-                '<p id="plugbot-btn-autorespond" style="color:#ED1C24">Respond</p>' +
-                '</div>'
-        );
-    }else{
         $('#user-container').prepend('<div id="plugbot-ui"></div>');
         $('#plugbot-ui').append(
             '<p id="plugbot-btn-menu" style="color:#58FAF4 ">BassPlug</p>' +
@@ -145,9 +131,9 @@ function displayUI(data) {
                 '<p id="plugbot-btn-animationoff" style="color:#3FFF00">Animation</p>' +
                 '<p id="plugbot-btn-stream" style="color:streambuttoncolor">Stream</p>' +
                 '<p id="plugbot-btn-alerts" style="color:#3FFF00">Alerts</p>' +
+                '<p id="plugbot-btn-emoji" style="color:#3FFF00">Emoji</p>' +
                 '</div>'
         );
-    }
     $('#dj-console').prepend('<div id="strobe"></div>');
     $('#strobe').append(
         '<p id="strobe-menu">Strobe</p>' +
@@ -227,6 +213,12 @@ function initUIListeners()
         function(){
             $(this).css("background-color", "rgba(10, 10, 10, 0.5)");
         });
+    $("#plugbot-btn-emoji") .hover(function(){
+            $(this).css("background-color", "rgba(39, 39, 39, 0.5)");
+        },
+        function(){
+            $(this).css("background-color", "rgba(10, 10, 10, 0.5)");
+        });
 
     $("#plugbot-btn-menu").on("click", function() {
         menu = !menu;
@@ -238,6 +230,7 @@ function initUIListeners()
         $("#plugbot-btn-animationoff").css("visibility", menu ? ("visible") : ("hidden"));
         $("#plugbot-btn-stream").css("visibility", menu ? ("visible") : ("hidden"));
         $("#plugbot-btn-alerts").css("visibility", menu ? ("visible") : ("hidden"));
+        $("#plugbot-btn-emoji").css("visibility", menu ? ("visible") : ("hidden"));
     });
     $("#strobe-menu").on("click", function() {
         $(this).css("color", !strobe ? "#00FFDE" : "#3B3B3B");
@@ -334,6 +327,17 @@ function initUIListeners()
             API.sendChat("/alertson");
         }
     });
+    $("#plugbot-btn-emoji").on("click", function() {
+       emoji = !emoji;
+        $(this).css("color", !emoji ? "3FFF00" : "#ED1C24");
+
+        if(!emoji){
+            Emoji.emojify = function(a){return a};
+        }else{
+            Emoji.emojify = function (a){var b=!1;": "==a.substr(0,2)&&(b=!0,a=a.substr(2));for(var c in Emoji._cons)var d=c,e=Emoji._cons[c],d=d.replace("<","&lt;").replace(">","&gt;"),d=RegExp("(\\s|^)("+Emoji._regexEscape(d)+")(?=\\s|$)","g"),a=a.replace(d,"$1:"+e+":");for(c=Emoji._matchStr.exec(a);c;)e=c[1].toLowerCase(),d="&colon;"+e+"&colon;",Emoji._map[e]&&(d='<span class="emoji-glow"><span class="emoji emoji-'+Emoji._map[e]+
+                '"></span></span>'),a=a.substr(0,c.index)+d+a.substr(c.index+c[0].length),c=Emoji._matchStr.exec(a);return(b?": ":"")+a};
+        }
+    });
 }
 function addGlobalStyle(css){
     var head, style;
@@ -418,7 +422,7 @@ function populateUserlist()
 
 function appendUser(user)
 {
-    var username = user.username.replace(/</g, '&lt;');;
+    var username = user.username.replace(/</g, '&lt;');
     var permission = user.permission;
     if (user.admin) {
         permission = 99;
@@ -838,18 +842,18 @@ var customChatCommand = function(value) {
             return true;
         }
     }
-    if (value.indexOf("/skip history") === 0) {
+    if (value.indexOf("/rskip history") === 0) {
         if (Models.room.data.staff[API.getSelf().id] > 1){
-            Models.chat.sendChat("@"+Models.room.getDJs()[0]+" Skipped because: your song was in the history");
+            Models.chat.sendChat("@"+Models.room.getDJs()[0]+" Skipped because: your song was in the history!");
             setTimeout(function(){
                 new ModerationForceSkipService();
             },1000);
             return true;
+        }
         }else{
             modChat("","Sorry, you have to be at least a bouncer to do that.");
             return true;
         }
-    }
     if (/^\/kick @(.*)$/.exec(value)) {
         if (Models.room.data.staff[API.getSelf().id] > 1){
             reg = RegExp.$1;
@@ -1162,7 +1166,7 @@ function repeatcheck(user) {
         if (historylist[j].media.cid == currentID) {
             if ($.inArray(currentID, skippedsongs) == -1) {
                 systemChat("","This song is still in the history ("+j+"/50)");
-                if (Models.room.data.staff[API.getSelf().id] > 1) {systemChat("", "Type /skip history to skip this");}
+                if (Models.room.data.staff[API.getSelf().id] > 1) {systemChat("", "Type /rskip history to skip this");}
                 skippedsongs.push(currentID);
                 break;
             }
