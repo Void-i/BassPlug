@@ -840,7 +840,7 @@ var customChatCommand = function(value) {
     }
     if (value.indexOf("/rskip history") === 0) {
         if (Models.room.data.staff[API.getSelf().id] > 1){
-            Models.chat.sendChat("@"+Models.room.getDJs()[0]+" Skipped because: your song was in the history");
+            Models.chat.sendChat("@"+Models.room.getDJs()[0].username+" Skipped because: your song was in the history");
             setTimeout(function(){
                 new ModerationForceSkipService();
             },1000);
