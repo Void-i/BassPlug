@@ -1,5 +1,5 @@
-var version = "Running BassPlug Dev Version 15 <br>Type '/change' for the changes made.<br>Use '/cmd' to show all commands.";
-var changeLog = "Dev Version 15 - Changed /skip history to /rskip history";
+var version = "Running BassPlug Dev Version 16 <br>Type '/change' for the changes made.<br>Use '/cmd' to show all commands.";
+var changeLog = "Dev Version 16 - Added /kickskip";
 appendToChat(version, null, "#58FAF4");
 
 if(localStorage.getItem("bassplug") !== "yes"){
@@ -37,14 +37,14 @@ var recent = false,
     strobe = false,
     debug = false,
     lights = false;
-if (DB.settings.streamDisabled = false) {
+if (!DB.settings.streamDisabled) {
     var streambuttoncolor = "#3FFF00";
     var stream = true;
 }else{
     var streambuttoncolor = "#ED1C24";
     var stream = false;
 }
-
+console.log(streambuttoncolor+" | "+stream);
 function initAPIListeners()
 {
     API.addEventListener(API.DJ_ADVANCE, djAdvanced);
@@ -320,11 +320,7 @@ function initUIListeners()
     $("#plugbot-btn-stream").on("click", function() {
         stream = !stream;
         $(this).css("color", !stream ? "#3FFF00" : "#ED1C24");
-        if(stream){
-            API.sendChat("/stream off");
-        }else{
-            API.sendChat("/stream on");
-        }
+       Models.chat.sendChat(DB.settings.streamDisabled ? "/stream on" : "/stream off");
     });
     $("#plugbot-btn-alerts").on("click", function() {
         $(this).css("color", !alerts ? "#3FFF00" : "#ED1C24");
@@ -598,6 +594,7 @@ var customChatCommand = function(value) {
         if (Models.room.data.staff[API.getSelf().id] && Models.room.data.staff[API.getSelf().id] > 1) {
             appendToChat("<center><strong>Moderation Commands -</strong></center><br>" +
                 "<strong>'/skip'</strong> - <em>skips current song</em><br>" +
+                "<strong>'/kickskip'</strong> - <em>kicks the current DJ</em><br>" +
                 "<strong>'/kick @(username)'</strong> - <em>kicks targeted user</em><br>" +
                 "<strong>'/add @(username)'</strong> - <em>adds targeted user to dj booth/waitlist</em><br>" +
                 "<strong>'/remove @(username)'</strong> - <em>removes targeted user from dj booth/waitlist</em><br>" +
@@ -818,6 +815,16 @@ var customChatCommand = function(value) {
             modChat("", "Sorry, you have to be at least a manager to do that.");
             return true;
         }
+    }
+    if (value.indexOf("/kickskip") === 0){
+       if (Models.room.data.staff[API.getSelf().id] > 1){
+        Models.room.getDJs()[0].id = id;
+        new ModerationKickUserService(id, " ", 60);
+        return true;
+       }else{
+           modChat("", "Sorry, you have to be at least a bouncer to do that.");
+           return true;
+       }
     }
     if (value.indexOf("/cancelfix") === 0){
         if (Models.room.data.staff[API.getSelf().id] > 2){
