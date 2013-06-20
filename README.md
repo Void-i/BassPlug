@@ -15,6 +15,7 @@ BassPlug has a new helper [mateon1](http://github.com/mateon1) who should help p
 - [ ] Fix the stupid stream button
 - [ ] Work on a better video hiding system
 - [ ] Add some more moderation functions / fix the uncompleted ones (fixbooth) / improve the current ones
+-  -  Added /kickskip    
 - [ ] Redesign the menu
 - [ ] Possibly add custom chat colors
 - [ ] Change autojoin and autowoot to use the services instead of .click()
