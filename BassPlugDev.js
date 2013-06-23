@@ -350,7 +350,6 @@ function addGlobalStyle(css){
     addGlobalStyle('#playback, #playback {border-style: solid; border-width: 1px; border-color: #000; ');
     addGlobalStyle('#meta-frame, #meta-frame {border-style: solid; border-width: 1px; border-color: #000; ');
     addGlobalStyle('#user-container, #user-container {border-style: solid; border-width: 1px; border-color: #000; ');
-    addGlobalStyle('#meta-frame, #meta-frame {width: 349px;}');
     addGlobalStyle('.frame-background, .frame-background {opacity: 0.83;}');
 //Changes the color of user's names in chat
     addGlobalStyle('.chat-from-featureddj, .chat-from-featureddj {color: #00C4FF !important;}');
