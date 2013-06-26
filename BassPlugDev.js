@@ -127,7 +127,7 @@ function displayUI(data) {
                 '<p id="plugbot-btn-hidevideo" style="color:#ED1C24">Hide Video</p>' +
                 '<p id="plugbot-btn-userlist" style="color:#3FFF00">Userlist</p>' +
                 '<p id="plugbot-btn-animationoff" style="color:#3FFF00">Animation</p>' +
-                '<p id="plugbot-btn-stream" style="color:streambuttoncolor">Stream</p>' +
+                '<p id="plugbot-btn-stream" style="color:'+streambuttoncolor+'">Stream</p>' +
                 '<p id="plugbot-btn-alerts" style="color:#3FFF00">Alerts</p>' +
                 '<p id="plugbot-btn-autorespond" style="color:#ED1C24">Respond</p>' +
                 '</div>'
@@ -143,7 +143,7 @@ function displayUI(data) {
                 '<p id="plugbot-btn-userlist" style="color:#3FFF00">Userlist</p>' +
                 '<p id="plugbot-btn-autorespond" style="color:#ED1C24">Respond</p>' +
                 '<p id="plugbot-btn-animationoff" style="color:#3FFF00">Animation</p>' +
-                '<p id="plugbot-btn-stream" style="color:streambuttoncolor">Stream</p>' +
+                '<p id="plugbot-btn-stream" style="color:'+streambuttoncolor+'">Stream</p>' +
                 '<p id="plugbot-btn-alerts" style="color:#3FFF00">Alerts</p>' +
                 '</div>'
         );
@@ -318,9 +318,9 @@ function initUIListeners()
         }
     });
     $("#plugbot-btn-stream").on("click", function() {
-        stream = !stream;
+        stream = !DB.settings.streamDisabled;
         $(this).css("color", !stream ? "#3FFF00" : "#ED1C24");
-       Models.chat.sendChat(DB.settings.streamDisabled ? "/stream on" : "/stream off");
+        Models.chat.sendChat(DB.settings.streamDisabled ? "/stream on" : "/stream off");
     });
     $("#plugbot-btn-alerts").on("click", function() {
         $(this).css("color", !alerts ? "#3FFF00" : "#ED1C24");
@@ -429,7 +429,7 @@ function appendUser(user)
         case 2:        // Bouncer
             imagePrefix = 'bouncer';
             break;
-        case 3:		// Manager
+        case 3:    	// Manager
             imagePrefix = 'manager';
             break;
         case 4:
@@ -816,14 +816,14 @@ var customChatCommand = function(value) {
         }
     }
     if (value.indexOf("/kickskip") === 0){
-       if (Models.room.data.staff[API.getSelf().id] > 1){
-        Models.room.getDJs()[0].id = id;
-        new ModerationKickUserService(id, " ", 60);
-        return true;
-       }else{
-           modChat("", "Sorry, you have to be at least a bouncer to do that.");
-           return true;
-       }
+        if (Models.room.data.staff[API.getSelf().id] > 1){
+            Models.room.getDJs()[0].id = id;
+            new ModerationKickUserService(id, " ", 60);
+            return true;
+        }else{
+            modChat("", "Sorry, you have to be at least a bouncer to do that.");
+            return true;
+        }
     }
     if (value.indexOf("/cancelfix") === 0){
         if (Models.room.data.staff[API.getSelf().id] > 2){
