@@ -12,7 +12,7 @@ BassPlug has a new helper [mateon1](http://github.com/mateon1) who should help p
 - [ ] Fix the script so that it stacks properly
 - [ ] Upgrade the userlist a bit with with better icons and add icons for ambassadors 
 - [ ] Make the strobe and lights out buttons look better
-- [ ] Fix the stupid stream button
+-  -  Fixed the stupid stream button
 - [ ] Work on a better video hiding system
 - [ ] Add some more moderation functions / fix the uncompleted ones (fixbooth) / improve the current ones
 -  -  Added /kickskip    
