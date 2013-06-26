@@ -1,5 +1,5 @@
-var version = "Running BassPlug Dev Version 16 <br>Type '/change' for the changes made.<br>Use '/cmd' to show all commands.";
-var changeLog = "Dev Version 16 - Added /kickskip";
+var version = "Running BassPlug Dev Version 16.01 <br>Type '/change' for the changes made.<br>Use '/cmd' to show all commands.";
+var changeLog = "Dev Version 16.01 - Fixed stream button";
 appendToChat(version, null, "#58FAF4");
 
 if(localStorage.getItem("bassplug") !== "yes"){
