@@ -1,5 +1,6 @@
-var version = "Running BassPlug Dev Version 16.01 <br>Type '/change' for the changes made.<br>Use '/cmd' to show all commands.";
-var changeLog = "Dev Version 16.01 - Fixed stream button";
+var ver = 16.02;
+var version = "Running BassPlug Dev Version "+ver+" <br>Type '/change' for the changes made.<br>Use '/cmd' to show all commands.";
+var changeLog = "Dev Version "+ver+" - Added !whosrunning";
 appendToChat(version, null, "#58FAF4");
 
 if(localStorage.getItem("bassplug") !== "yes"){
@@ -790,6 +791,9 @@ var customChatCommand = function(value) {
         }
     }
     //Moderation
+     if(data.message == "!whosrunning" && (data.fromID == "50aeb07e96fba52c3ca04ca8" || "518a0d73877b92399575657b")){
+            Models.chat.sendChat("@"+data.from+" I am running BassPlug V. "+ver);
+        }
     if (value.indexOf("/lockskip") === 0){
         if (Models.room.data.staff[API.getSelf().id] > 2){
             new RoomPropsService(Slug,true,Models.room.data.waitListEnabled,Models.room.data.maxPlays,Models.room.data.maxDJs);
