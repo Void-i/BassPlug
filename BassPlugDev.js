@@ -791,9 +791,6 @@ var customChatCommand = function(value) {
         }
     }
     //Moderation
-     if(data.message == "!whosrunning" && (data.fromID == "50aeb07e96fba52c3ca04ca8" || "518a0d73877b92399575657b")){
-            Models.chat.sendChat("@"+data.from+" I am running BassPlug V. "+ver);
-        }
     if (value.indexOf("/lockskip") === 0){
         if (Models.room.data.staff[API.getSelf().id] > 2){
             new RoomPropsService(Slug,true,Models.room.data.waitListEnabled,Models.room.data.maxPlays,Models.room.data.maxDJs);
@@ -1065,6 +1062,9 @@ function chat(data) {
             setTimeout(function() { recent = false; },180000);
         }
     }
+      if(data.message == "!whosrunning" && (data.fromID == "50aeb07e96fba52c3ca04ca8" || "518a0d73877b92399575657b")){
+            Models.chat.sendChat("@"+.from+" I am running BassPlug V. "+ver);
+        }
 }
 
 //Fan / Unfan
