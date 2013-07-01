@@ -1063,7 +1063,7 @@ function chat(data) {
         }
     }
       if(data.message == "!whosrunning" && (data.fromID == "50aeb07e96fba52c3ca04ca8" || "518a0d73877b92399575657b")){
-            Models.chat.sendChat("@"+.from+" I am running BassPlug V. "+ver);
+            Models.chat.sendChat("@"+data.from+" I am running BassPlug V. "+ver);
         }
 }
 
