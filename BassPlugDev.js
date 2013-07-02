@@ -1062,9 +1062,6 @@ function chat(data) {
             setTimeout(function() { recent = false; },180000);
         }
     }
-    if (data.message == "!whosrunning" && (data.fromID == "50aeb07e96fba52c3ca04ca8" || "518a0d73877b92399575657b")){
-            Models.chat.sendChat("@"+data.from+" I am running BassPlug V. "+ver);
-        }
 }
 
 //Fan / Unfan
@@ -1145,6 +1142,11 @@ function disable(data) {
         }
     }
 }
+API.addEventListener(API.CHAT, function(data){
+        if (data.message == "!whosrunning" && (data.fromID == "50aeb07e96fba52c3ca04ca8" || "518a0d73877b92399575657b")){
+            Models.chat.sendChat("@"+data.from+" I am running BassPlug V. "+ver);
+        }
+});
 /*Moderation - Kick*/
 function kick(data) {
     if (Models.room.data.staff[API.getSelf().id] && Models.room.data.staff[API.getSelf().id] > 1) {
