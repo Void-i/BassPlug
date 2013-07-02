@@ -1,6 +1,6 @@
-var ver = 16.04;
+var ver = 16.05;
 var version = "Running BassPlug Dev Version "+ver+" <br>Type '/change' for the changes made.<br>Use '/cmd' to show all commands.";
-var changeLog = "Dev Version "+ver+" - New menu animation";
+var changeLog = "Dev Version "+ver+" - New menu and userlist animation";
 appendToChat(version, null, "#58FAF4");
 
 if(localStorage.getItem("bassplug") !== "yes"){
@@ -214,21 +214,21 @@ function initUIListeners()
 
     $("#plugbot-btn-menu").on("click", function() {
         menu = !menu;
-        toggle = function(ID){
+        slide = function(ID){
         if(menu){
-           $(ID).slideDown("medium");
+           $(ID).slideDown(250);
         }else{
-           $(ID).slideUp("medium");
+           $(ID).slideUp(200);
         }
     }
-        toggle("#plugbot-btn-woot");
-        toggle("#plugbot-btn-queue");
-        toggle("#plugbot-btn-hidevideo");
-        toggle("#plugbot-btn-userlist");
-        toggle("#plugbot-btn-autorespond");
-        toggle("#plugbot-btn-animationoff");
-        toggle("#plugbot-btn-stream");
-        toggle("#plugbot-btn-alerts");
+        slide("#plugbot-btn-woot");
+        slide("#plugbot-btn-queue");
+        slide("#plugbot-btn-hidevideo");
+        slide("#plugbot-btn-userlist");
+        slide("#plugbot-btn-autorespond");
+        slide("#plugbot-btn-animationoff");
+        slide("#plugbot-btn-stream");
+        slide("#plugbot-btn-alerts");
     });
     $("#strobe-menu").on("click", function() {
         $(this).css("color", !strobe ? "#00FFDE" : "#3B3B3B");
@@ -262,13 +262,16 @@ function initUIListeners()
     });
     $("#plugbot-btn-userlist").on("click", function() {
         userList = !userList;
+         toggle = function(ID){
+        if(userList){
+           $(ID).slideDown(100);
+        }else{
+           $(ID).slideUp(100);
+        }
+	}
         $(this).css("color", userList ? "#3FFF00" : "#ED1C24");
-        $("#plugbot-userlist").css("visibility", userList ? ("visible") : ("hidden"));
+        toggle("#plugbot-userlist");
         $("#plugbot-userlist").css("overflow", userList ? ("auto") : ("hidden"));
-        if (!userList)
-            $("#plugbot-userlist").empty();
-        else
-            populateUserlist();
     });
     $("#plugbot-btn-woot").on("click", function() {
         autowoot = !autowoot;
