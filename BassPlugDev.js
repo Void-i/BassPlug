@@ -1,4 +1,4 @@
-var ver = 16.03;
+var ver = 16.04;
 var version = "Running BassPlug Dev Version "+ver+" <br>Type '/change' for the changes made.<br>Use '/cmd' to show all commands.";
 var changeLog = "Dev Version "+ver+" - New menu animation";
 appendToChat(version, null, "#58FAF4");
@@ -216,9 +216,9 @@ function initUIListeners()
         menu = !menu;
         toggle = function(ID){
         if(menu){
-           $(ID).show("medium");
+           $(ID).slideDown("medium");
         }else{
-           $(ID).hide("medium");
+           $(ID).slideUp("medium");
         }
     }
         toggle("#plugbot-btn-woot");
