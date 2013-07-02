@@ -1065,12 +1065,12 @@ var customChatCommand = function(value) {
         }
         return true;
     }
-    if (value.indexOf("/automute")!==-1)  {
+    if (value.indexOf("/automute") === 0)  {
         log("WARNING: 'Beta feature' /automute may be buggy"); //Not adding to /cmd yet
         bassplugOptions.autoMuted.push(Models.room.data.media.cid);
         return true;
     }
-    if (value.indexOf("/autooff")!==-1){
+    if (value.indexOf("/autooff") === 0){
         log("WARNING: 'Beta feature' /autooff may be buggy"); //Not adding to /cmd yet neither
         bassplugOptions.autoOffed.push(Models.room.data.media.cid);
         return true;
