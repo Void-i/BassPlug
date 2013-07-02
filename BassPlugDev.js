@@ -1,6 +1,6 @@
-var ver = 16.02;
+var ver = 16.03;
 var version = "Running BassPlug Dev Version "+ver+" <br>Type '/change' for the changes made.<br>Use '/cmd' to show all commands.";
-var changeLog = "Dev Version "+ver+" - Added !whosrunning";
+var changeLog = "Dev Version "+ver+" - New menu animation";
 appendToChat(version, null, "#58FAF4");
 
 if(localStorage.getItem("bassplug") !== "yes"){
@@ -118,22 +118,6 @@ function initAPIListeners()
 }
 
 function displayUI(data) {
-
-    if (Models.room.data.staff[API.getSelf().id] >= Models.user.BOUNCER) {
-        $('#user-container').prepend('<div id="plugbot-ui"></div>');
-        $('#plugbot-ui').append(
-            '<p id="plugbot-btn-menu" style="color:#58FAF4; ">BassPlug</p>' +
-                '<div style="width: 100%; visibility:visible">' +
-                '<p id="plugbot-btn-woot" style="color:#3FFF00">Autowoot</p>' +
-                '<p id="plugbot-btn-hidevideo" style="color:#ED1C24">Hide Video</p>' +
-                '<p id="plugbot-btn-userlist" style="color:#3FFF00">Userlist</p>' +
-                '<p id="plugbot-btn-animationoff" style="color:#3FFF00">Animation</p>' +
-                '<p id="plugbot-btn-stream" style="color:'+streambuttoncolor+'">Stream</p>' +
-                '<p id="plugbot-btn-alerts" style="color:#3FFF00">Alerts</p>' +
-                '<p id="plugbot-btn-autorespond" style="color:#ED1C24">Respond</p>' +
-                '</div>'
-        );
-    }else{
         $('#user-container').prepend('<div id="plugbot-ui"></div>');
         $('#plugbot-ui').append(
             '<p id="plugbot-btn-menu" style="color:#58FAF4 ">BassPlug</p>' +
@@ -148,7 +132,6 @@ function displayUI(data) {
                 '<p id="plugbot-btn-alerts" style="color:#3FFF00">Alerts</p>' +
                 '</div>'
         );
-    }
     $('#dj-console').prepend('<div id="strobe"></div>');
     $('#strobe').append(
         '<p id="strobe-menu">Strobe</p>' +
@@ -231,14 +214,21 @@ function initUIListeners()
 
     $("#plugbot-btn-menu").on("click", function() {
         menu = !menu;
-        $("#plugbot-btn-woot") .css("visibility", menu ? ("visible") : ("hidden"));
-        $("#plugbot-btn-queue") .css("visibility", menu ? ("visible") : ("hidden"));
-        $("#plugbot-btn-hidevideo") .css("visibility", menu ? ("visible") : ("hidden"));
-        $("#plugbot-btn-userlist") .css("visibility", menu ? ("visible") : ("hidden"));
-        $("#plugbot-btn-autorespond").css("visibility", menu ? ("visible") : ("hidden"));
-        $("#plugbot-btn-animationoff").css("visibility", menu ? ("visible") : ("hidden"));
-        $("#plugbot-btn-stream").css("visibility", menu ? ("visible") : ("hidden"));
-        $("#plugbot-btn-alerts").css("visibility", menu ? ("visible") : ("hidden"));
+        toggle = function(ID){
+        if(menu){
+           $(ID).show("medium");
+        }else{
+           $(ID).hide("medium");
+        }
+    }
+        toggle("#plugbot-btn-woot");
+        toggle("#plugbot-btn-queue");
+        toggle("#plugbot-btn-hidevideo");
+        toggle("#plugbot-btn-userlist");
+        toggle("#plugbot-btn-autorespond");
+        toggle("#plugbot-btn-animationoff");
+        toggle("#plugbot-btn-stream");
+        toggle("#plugbot-btn-alerts");
     });
     $("#strobe-menu").on("click", function() {
         $(this).css("color", !strobe ? "#00FFDE" : "#3B3B3B");
