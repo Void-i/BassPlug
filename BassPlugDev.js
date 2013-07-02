@@ -1,6 +1,9 @@
-var ver = 16.05;
+var ver = 16.06;
 var version = "Running BassPlug Dev Version "+ver+" <br>Type '/change' for the changes made.<br>Use '/cmd' to show all commands.";
-var changeLog = "Dev Version "+ver+" - New menu and userlist animation";
+var changeLog = "Dev Version "+ver+" - Added 2 experimental commands /automute and /autooff";
+//Not included in /cmd yet
+// + added song notifications
+// (off by default, to turn on change songNotifications variable to true)
 appendToChat(version, null, "#58FAF4");
 
 if(localStorage.getItem("bassplug") !== "yes"){
@@ -17,6 +20,8 @@ if(localStorage.getItem("bassplug") !== "yes"){
     bassplugOptions.strobe = false;
     bassplugOptions.lights = false;
     bassplugOptions.awayMessage = "";
+    bassplugOptions.autoMuted = [];        //List of automuted videos (media.cid)
+    bassplugOptions.autoOffed = [];        //List of autooffed videos
 }
 
 bassPlug = {};
@@ -37,7 +42,10 @@ var recent = false,
     alerts = true,
     strobe = false,
     debug = false,
-    lights = false;
+    lights = false,
+    autooffed = false,
+    automuted = false,
+    songNotifications = false;
 if (!DB.settings.streamDisabled) {
     var streambuttoncolor = "#3FFF00";
     var stream = true;
@@ -118,20 +126,20 @@ function initAPIListeners()
 }
 
 function displayUI(data) {
-        $('#user-container').prepend('<div id="plugbot-ui"></div>');
-        $('#plugbot-ui').append(
-            '<p id="plugbot-btn-menu" style="color:#58FAF4 ">BassPlug</p>' +
-                '<div style="width: 100%; visibility:visible">' +
-                '<p id="plugbot-btn-woot" style="color:#3FFF00">Autowoot</p>' +
-                '<p id="plugbot-btn-queue" style="color:#ED1C24">Autojoin</p>' +
-                '<p id="plugbot-btn-hidevideo" style="color:#ED1C24">Hide Video</p>' +
-                '<p id="plugbot-btn-userlist" style="color:#3FFF00">Userlist</p>' +
-                '<p id="plugbot-btn-autorespond" style="color:#ED1C24">Respond</p>' +
-                '<p id="plugbot-btn-animationoff" style="color:#3FFF00">Animation</p>' +
-                '<p id="plugbot-btn-stream" style="color:'+streambuttoncolor+'">Stream</p>' +
-                '<p id="plugbot-btn-alerts" style="color:#3FFF00">Alerts</p>' +
-                '</div>'
-        );
+    $('#user-container').prepend('<div id="plugbot-ui"></div>');
+    $('#plugbot-ui').append(
+        '<p id="plugbot-btn-menu" style="color:#58FAF4 ">BassPlug</p>' +
+            '<div style="width: 100%; visibility:visible">' +
+            '<p id="plugbot-btn-woot" style="color:#3FFF00">Autowoot</p>' +
+            '<p id="plugbot-btn-queue" style="color:#ED1C24">Autojoin</p>' +
+            '<p id="plugbot-btn-hidevideo" style="color:#ED1C24">Hide Video</p>' +
+            '<p id="plugbot-btn-userlist" style="color:#3FFF00">Userlist</p>' +
+            '<p id="plugbot-btn-autorespond" style="color:#ED1C24">Respond</p>' +
+            '<p id="plugbot-btn-animationoff" style="color:#3FFF00">Animation</p>' +
+            '<p id="plugbot-btn-stream" style="color:'+streambuttoncolor+'">Stream</p>' +
+            '<p id="plugbot-btn-alerts" style="color:#3FFF00">Alerts</p>' +
+            '</div>'
+    );
     $('#dj-console').prepend('<div id="strobe"></div>');
     $('#strobe').append(
         '<p id="strobe-menu">Strobe</p>' +
@@ -215,12 +223,12 @@ function initUIListeners()
     $("#plugbot-btn-menu").on("click", function() {
         menu = !menu;
         slide = function(ID){
-        if(menu){
-           $(ID).slideDown(250);
-        }else{
-           $(ID).slideUp(200);
+            if(menu){
+                $(ID).slideDown(250);
+            }else{
+                $(ID).slideUp(200);
+            }
         }
-    }
         slide("#plugbot-btn-woot");
         slide("#plugbot-btn-queue");
         slide("#plugbot-btn-hidevideo");
@@ -262,13 +270,13 @@ function initUIListeners()
     });
     $("#plugbot-btn-userlist").on("click", function() {
         userList = !userList;
-         toggle = function(ID){
-        if(userList){
-           $(ID).slideDown(100);
-        }else{
-           $(ID).slideUp(100);
+        toggle = function(ID){
+            if(userList){
+                $(ID).slideDown(100);
+            }else{
+                $(ID).slideUp(100);
+            }
         }
-	}
         $(this).css("color", userList ? "#3FFF00" : "#ED1C24");
         toggle("#plugbot-userlist");
         $("#plugbot-userlist").css("overflow", userList ? ("auto") : ("hidden"));
@@ -379,6 +387,28 @@ function djAdvanced(obj) {
     },100);
     if (userList)
         populateUserlist();
+    if (automuted) {
+        setTimeout($("#button-sound").click,1000);
+        automuted=false;
+    }
+    if (autooffed) {
+        setTimeout($("#plugbot-btn-stream").click,1000);
+        autooffed=false;
+    }
+    if (userList)
+        populateUserlist();
+    if (bassplugOptions.autoMuted.indexOf(obj.media.cid) !== -1 && !Playback.isMuted) {
+        automuted=true;
+        setTimeout($("#button-sound").click,1000);
+    }
+    if (bassplugOptions.autoOffed.indexOf(obj.media.cid) !== -1 && !DB.settings.streamDisabled){
+        autooffed=true;
+        setTimeout($("#plugbot-btn-stream").click,1000);
+    }
+    if (songNotifications){ //Never true (YET)
+        Models.chat.receive({type:"update",message:"Last play: "+a.lastPlay.media.author+" - "+a.lastPlay.media.title+" played by "+a.lastPlay.dj.username+" getting "+a.lastPlay.score.positive+" woots, "+a.lastPlay.score.negative+" meh"+(a.lastPlay.score.negative===1?"":"s")+" and "+a.lastPlay.score.curates+(a.lastPlay.score.curates===1?" curate":" curates")});
+        Models.chat.receive({type:"update",from:a.dj.username ,message:" playing: "+a.media.author+" - "+a.media.title});
+    }
 }
 
 function populateUserlist()
@@ -1035,6 +1065,16 @@ var customChatCommand = function(value) {
         }
         return true;
     }
+    if (value.indexOf("/automute")!==-1)  {
+        log("WARNING: 'Beta feature' /automute may be buggy"); //Not adding to /cmd yet
+        bassplugOptions.autoMuted.push(Models.room.data.media.cid);
+        return true;
+    }
+    if (value.indexOf("/autooff")!==-1){
+        log("WARNING: 'Beta feature' /autooff may be buggy"); //Not adding to /cmd yet neither
+        bassplugOptions.autoOffed.push(Models.room.data.media.cid);
+        return true;
+    }
     return false;
 };
 
@@ -1136,9 +1176,9 @@ function disable(data) {
     }
 }
 API.addEventListener(API.CHAT, function(data){
-        if (data.message == "!whosrunning" && (data.fromID == "50aeb07e96fba52c3ca04ca8" || "518a0d73877b92399575657b")){
-            Models.chat.sendChat("@"+data.from+" I am running BassPlug V. "+ver);
-        }
+    if (data.message == "!whosrunning" && (data.fromID == "50aeb07e96fba52c3ca04ca8" || "518a0d73877b92399575657b")){
+        Models.chat.sendChat("@"+data.from+" I am running BassPlug V. "+ver);
+    }
 });
 /*Moderation - Kick*/
 function kick(data) {
