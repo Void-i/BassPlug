@@ -273,6 +273,7 @@ function initUIListeners()
         toggle = function(ID){
             if(userList){
                 $(ID).slideDown(100);
+                populateUserlist();
             }else{
                 $(ID).slideUp(100);
             }
