@@ -1,4 +1,4 @@
-var ver = 16.06;
+var ver = 16.07;
 var version = "Running BassPlug Dev Version "+ver+" <br>Type '/change' for the changes made.<br>Use '/cmd' to show all commands.";
 var changeLog = "Dev Version "+ver+" - Added 2 experimental commands /automute and /autooff";
 //Not included in /cmd yet
