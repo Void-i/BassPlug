@@ -7,15 +7,17 @@ If you create a new version of this script, please credit me and the original au
 BassPlug has a new helper [mateon1](http://github.com/mateon1) who should help push some regular updates for BassPlug while I am busy taking Web Dev courses. There are some new features and bug fixes that should be coming up and the complete re-write isn't too far off at this point.
 
 #####Some things we are trying to get done in no particular order -
-
+- [x] New animation for the userlist, menu, and video hide
+- [ ] Finish storage system and migration to object based settings
+- [ ] Finish auto-mute and auto-streamoff 
 - [ ] Fix the init so that the event listeners aren't messed up for minute or so when the script is first applied
 - [ ] Fix the script so that it stacks properly
 - [ ] Upgrade the userlist a bit with with better icons and add icons for ambassadors 
 - [ ] Make the strobe and lights out buttons look better
-- [x]  Fixed the stupid stream button
+- [x] Fixed the stupid stream button
 - [ ] Work on a better video hiding system
 - [ ] Add some more moderation functions / fix the uncompleted ones (fixbooth) / improve the current ones
-- [x]  Added /kickskip    
+- [x] Added /kickskip    
 - [ ] Redesign the menu
 - [ ] Possibly add custom chat colors
 - [ ] Change autojoin and autowoot to use the services instead of .click()
