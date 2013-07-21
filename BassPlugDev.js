@@ -1,6 +1,7 @@
+//DO NOT RELEASE YET!!!!!!!!
 var ver = 16.07;
 var version = "Running BassPlug Dev Version "+ver+" <br>Type '/change' for the changes made.<br>Use '/cmd' to show all commands.";
-var changeLog = "Dev Version "+ver+" - Added 2 experimental commands /automute and /autooff";
+var changeLog = "Dev Version "+ver+" - New alerts menu | storage finished | /automute and /autooff finished";
 //Not included in /cmd yet
 // + added song notifications
 // (off by default, to turn on change songNotifications variable to true)
@@ -17,17 +18,12 @@ if(localStorage.getItem("bassplug") !== "yes"){
     bassplugOptions.stream = true;
     bassplugOptions.menu = true;
     bassplugOptions.debug = false;
-    bassplugOptions.strobe = false;
-    bassplugOptions.lights = false;
     bassplugOptions.awayMessage = "";
     bassplugOptions.autoMuted = [];        //List of automuted videos (media.cid)
     bassplugOptions.autoOffed = [];        //List of autooffed videos
+    localStorage.setItem("bassplug", "yes");
+    
 }
-
-bassPlug = {};
-bassPlug.mehcount = 0;
-bassPlug.recent = false;
-bassPlug.recentEmotes = false;
 
 var recent = false,
     awaymsg = "",
@@ -46,6 +42,7 @@ var recent = false,
     autooffed = false,
     automuted = false,
     songNotifications = false;
+    alertsMenu = false;
 if (!DB.settings.streamDisabled) {
     var streambuttoncolor = "#3FFF00";
     var stream = true;
@@ -53,10 +50,55 @@ if (!DB.settings.streamDisabled) {
     var streambuttoncolor = "#ED1C24";
     var stream = false;
 }
-console.log(streambuttoncolor+" | "+stream);
-function initAPIListeners()
-{
-    API.addEventListener(API.DJ_ADVANCE, djAdvanced);
+function initAPIListeners(){
+    
+	API.addEventListener(API.DJ_ADVANCE, function(obj) {
+		        if (hideVideo) {
+            $("#yt-frame").css("height", "0px");
+            $("#playback .playback-container").css("opacity", "0.0");
+        }
+    setTimeout(function() {
+        if (autowoot && API.getDJs()[0].id !== API.getSelf().id) {
+            new RoomVoteService(1);
+        }
+       if(autoqueue && $("#button-waitlist-leave").is(':visible') === false){
+            new WaitListJoinService();
+		}
+    },1500);
+    if (userList)
+        populateUserlist();
+    if (automuted) {
+        setTimeout($("#button-sound").click,1000);
+        automuted=false;
+    }
+    if (autooffed) {
+        setTimeout($("#plugbot-btn-stream").click,1000);
+        autooffed=false;
+    }
+    if (userList)
+        populateUserlist();
+    if (bassplugOptions.autoMuted.indexOf(obj.media.cid) > -1 && !Playback.isMuted) {
+        automuted=true;
+        setTimeout($("#button-sound").click,1000);
+    }
+    if (bassplugOptions.autoOffed.indexOf(obj.media.cid) > -1 && !DB.settings.streamDisabled){
+        autooffed=true;
+        setTimeout($("#plugbot-btn-stream").click,1000);
+    }
+    if (songNotifications){ //Never true (YET)
+        Models.chat.receive({type:"update",message:"Last play: "+a.lastPlay.media.author+" - "+a.lastPlay.media.title+" played by "+a.lastPlay.dj.username+" getting "+a.lastPlay.score.positive+" woots, "+a.lastPlay.score.negative+" meh"+(a.lastPlay.score.negative===1?"":"s")+" and "+a.lastPlay.score.curates+(a.lastPlay.score.curates===1?" curate":" curates")});
+        Models.chat.receive({type:"update",from:a.dj.username ,message:" playing: "+a.media.author+" - "+a.media.title});
+    }
+            if(strobe){
+            $("#strobe-menu").click();
+            strobe = false;
+        }
+        if(lights){
+            $("#lights-menu").click();
+            lights = false;
+        }
+});
+	
     API.addEventListener(API.VOTE_UPDATE, function(obj) {
         if(debug){
             console.log("[BassPlug] Updating user vote...");
@@ -112,16 +154,6 @@ function initAPIListeners()
             console.log("[BassPlug] Populating Userlist...");
         }
     });
-    API.addEventListener(API.DJ_ADVANCE, function(){
-        if(strobe){
-            $("#strobe-menu").click();
-            strobe = false;
-        }
-        if(lights){
-            $("#lights-menu").click();
-            lights = false;
-        }
-    });
     API.addEventListener(API.CHAT, disable);
 }
 
@@ -132,13 +164,23 @@ function displayUI(data) {
             '<div style="width: 100%; visibility:visible">' +
             '<p id="plugbot-btn-woot" style="color:#3FFF00">Autowoot</p>' +
             '<p id="plugbot-btn-queue" style="color:#ED1C24">Autojoin</p>' +
-            '<p id="plugbot-btn-hidevideo" style="color:#ED1C24">Hide Video</p>' +
-            '<p id="plugbot-btn-userlist" style="color:#3FFF00">Userlist</p>' +
             '<p id="plugbot-btn-autorespond" style="color:#ED1C24">Respond</p>' +
-            '<p id="plugbot-btn-animationoff" style="color:#3FFF00">Animation</p>' +
+            '<p id="plugbot-btn-hidevideo" style="color:#ED1C24">Hide Video</p>' +
             '<p id="plugbot-btn-stream" style="color:'+streambuttoncolor+'">Stream</p>' +
-            '<p id="plugbot-btn-alerts" style="color:#3FFF00">Alerts</p>' +
+            '<p id="plugbot-btn-animationoff" style="color:#3FFF00">Animation</p>' +
+            '<p id="plugbot-btn-userlist" style="color:#3FFF00">Userlist</p>' +            
+            '<p id="plugbot-btn-alerts" style="color:#58FAF4">Alerts</p>' +
             '</div>'
+    );
+    $('#plugbot-ui').append(
+		'<div id="alertsMenu" style="width: 100%; visibility:hidden">' +
+			'<p id="alerts-enable" style="color:#3FFF00">Enable</p>' +
+			'<p id="alerts-leavejoin" style="color:#3FFF00">Leave/Join</p>' +
+			'<p id="alerts-curate" style="color:#3FFF00">Curates</p>' +
+			'<p id="alerts-history" style="color:#3FFF00">History</p>' +
+			'<p id="alerts-lastplayed" style="color:#3FFF00">Last Song</p>' +
+			'<p id="alerts-upnext" style="color:#3FFF00">Next Song</p>' +
+			'</div>'
     );
     $('#dj-console').prepend('<div id="strobe"></div>');
     $('#strobe').append(
@@ -237,6 +279,12 @@ function initUIListeners()
         slide("#plugbot-btn-animationoff");
         slide("#plugbot-btn-stream");
         slide("#plugbot-btn-alerts");
+        $("#alerts-enable").slideUp(200);
+        $("#alerts-leavejoin").slideUp(200);
+        $("#alerts-curate").slideUp(200);
+        $("#alerts-history").slideUp(200);
+        $("#alerts-lastplayed").slideUp(200);
+        $("#alerts-upnext").slideUp(200);
     });
     $("#strobe-menu").on("click", function() {
         $(this).css("color", !strobe ? "#00FFDE" : "#3B3B3B");
@@ -273,7 +321,6 @@ function initUIListeners()
         toggle = function(ID){
             if(userList){
                 $(ID).slideDown(100);
-                populateUserlist();
             }else{
                 $(ID).slideUp(100);
             }
@@ -289,8 +336,15 @@ function initUIListeners()
     });
     $("#plugbot-btn-hidevideo").on("click", function() {
         hideVideo = !hideVideo;
+        		fade = function(ID){
+		  if(!hideVideo){
+                $(ID).fadeIn(150);
+            }else{
+                $(ID).fadeOut(150);
+			}
+         }
         $(this).css("color", hideVideo ? "#3FFF00" : "#ED1C24");
-        $("#yt-frame").animate({"height": (hideVideo ? "0px" : "271px")}, {duration: "fast"});
+        fade("#yt-frame");
     });
     $("#plugbot-btn-queue").on("click", function() {
         autoqueue = !autoqueue;
@@ -303,7 +357,7 @@ function initUIListeners()
         if (!autorespond) {
             API.removeEventListener(API.CHAT,chat);
         } else {
-            awaymsg = prompt("The message the you enter here will be sent if someone mentions you.\nAdd /user/ to the beginning of your afk message if you want to reply to the person who mentions you.","/me is away from keyboard.");
+            awaymsg = prompt("The message the you enter here will be sent if someone mentions you.\nAdd /@u/ to the beginning of your afk message if you want to reply to the person who mentions you.","/me is away from keyboard.");
             if(awaymsg != null){
                 !autorespond;
                 $("#plugbot-btn-autorespond").css("color", autorespond, "#ED1C24");
@@ -326,12 +380,35 @@ function initUIListeners()
         Models.chat.sendChat(DB.settings.streamDisabled ? "/stream on" : "/stream off");
     });
     $("#plugbot-btn-alerts").on("click", function() {
-        $(this).css("color", !alerts ? "#3FFF00" : "#ED1C24");
-        if(alerts){
-            API.sendChat("/alertsoff");
-        }else{
-            API.sendChat("/alertson");
+		$("#alertsMenu") .css("visibility", "visible");
+		alertsMenu = !alertsMenu
+        slide = function(ID){
+            if(!alertsMenu){
+                $(ID).slideDown(250);
+            }else{
+                $(ID).slideUp(200);
+            }
         }
+           slide2 = function(ID){
+            if(alertsMenu){
+                $(ID).slideDown(250);
+            }else{
+                $(ID).slideUp(200);
+            }
+        }
+        slide("#plugbot-btn-woot");
+        slide("#plugbot-btn-queue");
+        slide("#plugbot-btn-hidevideo");
+        slide("#plugbot-btn-userlist");
+        slide("#plugbot-btn-autorespond");
+        slide("#plugbot-btn-animationoff");
+        slide("#plugbot-btn-stream");
+		slide2("#alerts-enable");	
+        slide2("#alerts-leavejoin");
+        slide2("#alerts-curate");
+        slide2("#alerts-history");
+        slide2("#alerts-lastplayed");
+        slide2("#alerts-upnext");
     });
 }
 function addGlobalStyle(css){
@@ -369,47 +446,6 @@ function addGlobalStyle(css){
     addGlobalStyle('.chat-moderation:nth-child(1n), .chat-moderation:nth-child(1n) {background-color: rgba(255, 0, 0, 0.09);}');
     addGlobalStyle('.chat-skip:nth-child(1n), .chat-skip:nth-child(1n) {background-color: rgba(255, 0, 0, 0.09);}');
     addGlobalStyle('.chat-emote:nth-child(2n), .chat-emote:nth-child(2n) {background-color: rgba(0, 0, 0, 0.45);}');
-}
-
-function djAdvanced(obj) {
-    setTimeout(function() {
-        if (hideVideo) {
-            $("#yt-frame").css("height", "0px");
-            $("#playback .playback-container").css("opacity", "0.0");
-        }
-        if (autowoot) {
-            var dj = API.getDJs()[0];
-            if (dj === null) return;
-            if (dj == API.getSelf()) return;
-            $('#button-vote-positive').click();
-        }
-        if ($("#button-dj-waitlist-join").css("display") === "block" && autoqueue)
-            $("#button-dj-waitlist-join").click();
-    },100);
-    if (userList)
-        populateUserlist();
-    if (automuted) {
-        setTimeout($("#button-sound").click,1000);
-        automuted=false;
-    }
-    if (autooffed) {
-        setTimeout($("#plugbot-btn-stream").click,1000);
-        autooffed=false;
-    }
-    if (userList)
-        populateUserlist();
-    if (bassplugOptions.autoMuted.indexOf(obj.media.cid) !== -1 && !Playback.isMuted) {
-        automuted=true;
-        setTimeout($("#button-sound").click,1000);
-    }
-    if (bassplugOptions.autoOffed.indexOf(obj.media.cid) !== -1 && !DB.settings.streamDisabled){
-        autooffed=true;
-        setTimeout($("#plugbot-btn-stream").click,1000);
-    }
-    if (songNotifications){ //Never true (YET)
-        Models.chat.receive({type:"update",message:"Last play: "+a.lastPlay.media.author+" - "+a.lastPlay.media.title+" played by "+a.lastPlay.dj.username+" getting "+a.lastPlay.score.positive+" woots, "+a.lastPlay.score.negative+" meh"+(a.lastPlay.score.negative===1?"":"s")+" and "+a.lastPlay.score.curates+(a.lastPlay.score.curates===1?" curate":" curates")});
-        Models.chat.receive({type:"update",from:a.dj.username ,message:" playing: "+a.media.author+" - "+a.media.title});
-    }
 }
 
 function populateUserlist()
@@ -1014,19 +1050,21 @@ var customChatCommand = function(value) {
         return true;
     }
     if (value.indexOf("/join") === 0) {
-        API.waitListJoin();
+        new WaitListJoinService();
+        new DJJoinService();
         return true;
     }
     if (value.indexOf("/leave") === 0) {
-        API.waitListLeave();
+        new WaitListLeaveService();
+        new DJLeaveService();
         return true;
     }
     if (value.indexOf("/woot") === 0) {
-        $("#button-vote-positive").click();
+        new RoomVoteService(1);
         return true;
     }
     if (value.indexOf("/meh") === 0) {
-        $("#button-vote-negative").click();
+        new RoomVoteService(0);
         return true;
     }
     if (value.indexOf("/version") === 0) {
@@ -1072,8 +1110,10 @@ var customChatCommand = function(value) {
         return true;
     }
     if (value.indexOf("/autooff") === 0){
+		if(!DB.settings.streamDisabled)DB.settings.streamDisabled = !0, DB.saveSettings(), Playback.stop();
         log("WARNING: 'Beta feature' /autooff may be buggy"); //Not adding to /cmd yet neither
         bassplugOptions.autoOffed.push(Models.room.data.media.cid);
+        bassplugOptions.save();
         return true;
     }
     return false;
