@@ -58,7 +58,7 @@ function initAPIListeners(){
             $("#playback .playback-container").css("opacity", "0.0");
         }
     setTimeout(function() {
-        if (autowoot && API.getDJs()[0].id !== API.getSelf().id) {
+        if (autowoot && API.getDJs()[0].id !== API.getUser().id) {
             new RoomVoteService(1);
         }
        if(autoqueue && $("#button-waitlist-leave").is(':visible') === false){
@@ -99,7 +99,7 @@ function initAPIListeners(){
         }
 });
 	
-    API.addEventListener(API.VOTE_UPDATE, function(obj) {
+    API.on(API.VOTE_UPDATE, function(obj) {
         if(debug){
             console.log("[BassPlug] Updating user vote...");
         }
@@ -114,7 +114,7 @@ function initAPIListeners(){
             console.log("[BassPlug] Populating Userlist...");
         }
     });
-    API.addEventListener(API.CURATE_UPDATE, function(obj) {
+    API.on(API.CURATE_UPDATE, function(obj) {
         if (alerts) {
             var media = API.getMedia();
             log(obj.user.username + " added " + media.author + " - " + media.title);
@@ -126,7 +126,7 @@ function initAPIListeners(){
             }
         }
     });
-    API.addEventListener(API.USER_JOIN, function(user) {
+    API.on(API.USER_JOIN, function(user) {
         username = user.username.replace(/</g, '&lt;');
         if (alerts){
             appendToChat(username + " joined the room", null, "#A9D033");
@@ -143,7 +143,7 @@ function initAPIListeners(){
             console.log("[BassPlug] Populating Userlist...");
         }
     });
-    API.addEventListener(API.USER_LEAVE, function(user) {
+    API.on(API.USER_LEAVE, function(user) {
         username = user.username.replace(/</g, '&lt;');
         if (alerts){
             appendToChat(username + " left the room", null, "#A9D033");
@@ -154,7 +154,7 @@ function initAPIListeners(){
             console.log("[BassPlug] Populating Userlist...");
         }
     });
-    API.addEventListener(API.CHAT, disable);
+    API.on(API.CHAT, disable);
 }
 
 function displayUI(data) {
@@ -293,11 +293,11 @@ function initUIListeners()
             if(lights){
                 $("#lights-menu").click();
             }
-            RoomUser.audience.strobeMode(true);
+            require ('app/views/room/AudienceView').strobeMode('true');
             updateChat("","You hit the strobe!");
             strobe = true;
         }else{
-            RoomUser.audience.strobeMode(false);
+            require ('app/views/room/AudienceView').strobeMode();
             strobe = false;
         }
     });
@@ -308,11 +308,11 @@ function initUIListeners()
             if(strobe){
                 $("#strobe-menu").click();
             }
-            RoomUser.audience.lightsOut(true);
+            require ('app/views/room/AudienceView').lightsOut('true')
             updateChat("","You set the mood!");
             lights = true;
         }else{
-            RoomUser.audience.lightsOut(false);
+            require ('app/views/room/AudienceView').lightsOut()
             lights = false;
         }
     });
@@ -355,13 +355,13 @@ function initUIListeners()
         autorespond = !autorespond;
         $(this).css("color", autorespond ? "#3FFF00" : "#ED1C24");
         if (!autorespond) {
-            API.removeEventListener(API.CHAT,chat);
+            API.off(API.CHAT,chat);
         } else {
             awaymsg = prompt("The message the you enter here will be sent if someone mentions you.\nAdd /@u/ to the beginning of your afk message if you want to reply to the person who mentions you.","/me is away from keyboard.");
             if(awaymsg != null){
                 !autorespond;
                 $("#plugbot-btn-autorespond").css("color", autorespond, "#ED1C24");
-                API.addEventListener(API.CHAT,chat);
+                API.on(API.CHAT,chat);
             }
         }
     });
@@ -377,7 +377,7 @@ function initUIListeners()
     $("#plugbot-btn-stream").on("click", function() {
         stream = !DB.settings.streamDisabled;
         $(this).css("color", !stream ? "#3FFF00" : "#ED1C24");
-        Models.chat.sendChat(DB.settings.streamDisabled ? "/stream on" : "/stream off");
+        API.sendChat(DB.settings.streamDisabled ? "/stream on" : "/stream off");
     });
     $("#plugbot-btn-alerts").on("click", function() {
 		$("#alertsMenu") .css("visibility", "visible");
@@ -454,7 +454,7 @@ function populateUserlist()
     $('#plugbot-userlist').html(' ');
     $('#plugbot-userlist').append('<h1 style="text-indent:12px;color:#58FAF4;font-size:14px;font-variant:small-caps;">Users: ' + API.getUsers().length + '</h1>');
     if ($('#button-dj-waitlist-view').attr('title') !== '') {
-        if ($('#button-dj-waitlist-leave').css('display') === 'block' && ($.inArray(API.getDJs(), API.getSelf()) == -1)) {
+        if ($('#button-dj-waitlist-leave').css('display') === 'block' && ($.inArray(API.getDJs(), API.getUser()) == -1)) {
             var spot = $('#button-dj-waitlist-view').attr('title').split('(')[1];
             spot = spot.substring(0, spot.indexOf(')'));
             $('#plugbot-userlist').append('<h1 id="plugbot-queuespot"><span style="font-variant:small-caps">Waitlist:</span> ' + spot);
@@ -567,57 +567,41 @@ function appendToChat(message, from, color){
 var systemChat = function(from, message){
     Models.chat.receive({
         type: "system",
-        from: from,
-        message: message,
-        language: Models.user.data.language
+        from: data.from,
+        message: data.message,
+        language: data.language
     })
 };
 var messageChat = function(from, message){
     Models.chat.receive({
         type: "message",
-        from: from,
-        message: message,
-        language: Models.user.data.language
+        from: data.from,
+        message: data.message,
+        language: data.language
     })
 };
 var emoteChat = function(from, message){
     Models.chat.receive({
         type: "emote",
-        from: from,
-        message: message,
-        language: Models.user.data.language
+        from: data.from,
+        message: data.message,
+        language: data.language
     })
 };
 var modChat = function(from, message){
     Models.chat.receive({
         type: "moderation",
-        from: from,
-        message: message,
-        language: Models.user.data.language
+        from: data.from,
+        message: data.message,
+        language: data.language
     })
 };
 var mentionChat = function(from, message){
     Models.chat.receive({
         type: "mention",
-        from: from,
-        message: message,
-        language: Models.user.data.language
-    })
-};
-var skipChat = function(from, message){
-    Models.chat.receive({
-        type: "skip",
-        from: from,
-        message: message,
-        language: Models.user.data.language
-    })
-};
-var updateChat = function(from, message){
-    Models.chat.receive({
-        type: "update",
-        from: from,
-        message: message,
-        language: Models.user.data.language
+        from: data.from,
+        message: data.message,
+        language: data.language
     })
 };
 /*ChatCommands*/
@@ -651,7 +635,7 @@ var customChatCommand = function(value) {
             "<strong>'/edit off'</strong> - <em>Turns off editing mode</em><br>" +
             "<strong>'/getpos'</strong> - <em>get current waitlist position</em><br>" +
             "<strong>'/version'</strong> - <em>displays version number</em><br>", null, "#F700FA");
-        if (Models.room.data.staff[API.getSelf().id] && Models.room.data.staff[API.getSelf().id] > 1) {
+        if (API.getStaff()[API.getUser().id] && API.getStaff()[API.getUser().id] > 1) {
             appendToChat("<center><strong>Moderation Commands -</strong></center><br>" +
                 "<strong>'/skip'</strong> - <em>skips current song</em><br>" +
                 "<strong>'/kickskip'</strong> - <em>kicks the current DJ</em><br>" +
@@ -659,7 +643,7 @@ var customChatCommand = function(value) {
                 "<strong>'/add @(username)'</strong> - <em>adds targeted user to dj booth/waitlist</em><br>" +
                 "<strong>'/remove @(username)'</strong> - <em>removes targeted user from dj booth/waitlist</em><br>" +
                 "<strong>'/whois @(username)'</strong> - <em>gives general information about user</em><br>", null, "#FF0000");
-            if(Models.room.data.staff[API.getSelf().id] && Models.room.data.staff[API.getSelf().id] > 2) {
+            if(API.getStaff()[API.getUser().id] && API.getStaff()[API.getUser().id] > 2) {
                 appendToChat("<strong>'/lock'</strong> - <em>locks the DJ booth</em><br>" +
                     "<strong>'/unlock'</strong> - <em>unlocks the DJ booth</em><br>" +
                     "<strong>'/lockskip'</strong> - <em>Locks the DJ booth, skips, and unlocks</em><br>"
@@ -852,13 +836,13 @@ var customChatCommand = function(value) {
     }
     //Moderation
     if (value.indexOf("/lockskip") === 0){
-        if (Models.room.data.staff[API.getSelf().id] > 2){
-            new RoomPropsService(Slug,true,Models.room.data.waitListEnabled,Models.room.data.maxPlays,Models.room.data.maxDJs);
+        if (API.getStaff()[API.getUser().id] > 2){
+            API.moderateRoomProps(true, false);
             setTimeout(function(){
-                new ModerationForceSkipService();
+                API.moderateForceSkip();
             }, 100);
             setTimeout(function(){
-                new RoomPropsService(Slug,false,Models.room.data.waitListEnabled,Models.room.data.maxPlays,Models.room.data.maxDJs);
+                API.moderateRoomProps(false, false);
             },300);
             return true;
         }else{
@@ -867,7 +851,7 @@ var customChatCommand = function(value) {
         }
     }
     if (value.indexOf("/fixbooth") === 0){
-        if (Models.room.data.staff[API.getSelf().id] > 2){
+        if (API.getStaff()[API.getUser().id] > 2){
             var fixOver = false;
             fixBooth();
             return true;
@@ -877,9 +861,9 @@ var customChatCommand = function(value) {
         }
     }
     if (value.indexOf("/kickskip") === 0){
-        if (Models.room.data.staff[API.getSelf().id] > 1){
-            Models.room.getDJs()[0].id = id;
-            new ModerationKickUserService(id, " ", 60);
+        if (API.getStaff()[API.getUser().id] > 1){
+            API.getDJs()[0].id = id;
+            new API.moderateKickUser(id, " ", 60);
             return true;
         }else{
             modChat("", "Sorry, you have to be at least a bouncer to do that.");
@@ -887,7 +871,7 @@ var customChatCommand = function(value) {
         }
     }
     if (value.indexOf("/cancelfix") === 0){
-        if (Models.room.data.staff[API.getSelf().id] > 2){
+        if (API.getStaff()[API.getUser().id] > 2){
             cancelFix = true;
             API.sendChat("/me FixBooth Canceled");
             return true;
@@ -897,8 +881,8 @@ var customChatCommand = function(value) {
         }
     }
     if (value.indexOf("/skip") === 0) {
-        if (Models.room.data.staff[API.getSelf().id] > 1){
-            new ModerationForceSkipService();
+        if (API.getStaff()[API.getUser().id] > 1){
+            new API.moderateForceSkip();
             return true;
         }else{
             modChat("","Sorry, you have to be at least a bouncer to do that.");
@@ -906,10 +890,10 @@ var customChatCommand = function(value) {
         }
     }
     if (value.indexOf("/rskip history") === 0) {
-        if (Models.room.data.staff[API.getSelf().id] > 1){
-            Models.chat.sendChat("@"+Models.room.getDJs()[0].username+" Skipped because: your song was in the history");
+        if (API.getStaff()[API.getUser().id] > 1){
+            API.sendChat("@"+API.getDJs()[0].username+" Skipped because: your song was in the history");
             setTimeout(function(){
-                new ModerationForceSkipService();
+                new API.moderateForceSkip();
             },1000);
             return true;
         }else{
@@ -918,7 +902,7 @@ var customChatCommand = function(value) {
         }
     }
     if (/^\/kick @(.*)$/.exec(value)) {
-        if (Models.room.data.staff[API.getSelf().id] > 1){
+        if (API.getStaff()[API.getUser().id] > 1){
             reg = RegExp.$1;
             target = reg.trim();
             kick();
@@ -929,7 +913,7 @@ var customChatCommand = function(value) {
         }
     }
     if (/^\/remove @(.*)$/.exec(value)) {
-        if (Models.room.data.staff[API.getSelf().id] > 1){
+        if (API.getStaff()[API.getUser().id] > 1){
             reg = RegExp.$1;
             target = reg.trim();
             removedj();
@@ -940,7 +924,7 @@ var customChatCommand = function(value) {
         }
     }
     if (/^\/add @(.*)$/.exec(value)) {
-        if (Models.room.data.staff[API.getSelf().id] > 1){
+        if (API.getStaff()[API.getUser().id] > 1){
             reg = RegExp.$1;
             target = reg.trim();
             adddj();
@@ -951,7 +935,7 @@ var customChatCommand = function(value) {
         }
     }
     if (/^\/whois @(.*)$/.exec(value)) {
-        if (Models.room.data.staff[API.getSelf().id] > 1){
+        if (API.getStaff()[API.getUser().id] > 1){
             reg = RegExp.$1;
             target = reg.trim();
             getuserinfo();
@@ -962,8 +946,8 @@ var customChatCommand = function(value) {
         }
     }
     if (value.indexOf("/lock") === 0) {
-        if (Models.room.data.staff[API.getSelf().id] > 2){
-            new RoomPropsService(Slug,true,Models.room.data.waitListEnabled,Models.room.data.maxPlays,Models.room.data.maxDJs);
+        if (API.getStaff()[API.getUser().id] > 2){
+            API.moderateRoomProps(true, true);
             return true;
         }else{
             modChat("","Sorry, you have to be at least a manager to do that.");
@@ -971,8 +955,8 @@ var customChatCommand = function(value) {
         }
     }
     if (value.indexOf("/unlock") === 0) {
-        if (Models.room.data.staff[API.getSelf().id] > 2){
-            new RoomPropsService(Slug,false,Models.room.data.waitListEnabled,Models.room.data.maxPlays,Models.room.data.maxDJs);
+        if (API.getStaff()[API.getUser().id] > 2){
+            API.moderateRoomProps(false, true)
             return true;
         }else{
             modChat("","Sorry, you have to be at least a manger to do that");
@@ -1282,7 +1266,7 @@ function fixBooth(){
                     }, 150);
                     setTimeout(function () {
                         fixover = true;
-                        API.removeEventListener(API.DJ_ADVANCE, boothAdvanceA);
+                        API.off(API.DJ_ADVANCE, boothAdvanceA);
                     }, 200);
                 }
             } else {
@@ -1290,8 +1274,8 @@ function fixBooth(){
                 function boothAdvanceB() {
                     if (DJName === secondUser) {
                         API.sendChat("true");
-                        API.addEventListener(API.DJ_ADVANCE, boothAdvanceC);
-                        new RoomPropsService(Slug, true, Models.room.data.waitListEnabled, Models.room.data.maxPlays, Models.room.data.maxDJs);
+                        API.on(API.DJ_ADVANCE, boothAdvanceC);
+                        API.moderateRoomProps(true, true)
                         function boothAdvanceC() {
                             setTimeout(function () {
                                 API.sendChat("/remove " + secondUser);
@@ -1300,12 +1284,12 @@ function fixBooth(){
                                 API.sendChat("/add " + firstUser);
                             }, 100);
                             setTimeout(function () {
-                                new RoomPropsService(Slug, false, Models.room.data.waitListEnabled, Models.room.data.maxPlays, Models.room.data.maxDJs);
+                                API.moderateRoomProps(false, true);
                             }, 150);
                             setTimeout(function () {
                                 fixover = true;
-                                API.removeEventListener(API.DJ_ADVANCE, boothAdvanceC);
-                                API.removeEventListener(API.DJ_ADVANCE, boothAdvanceB);
+                                API.off(API.DJ_ADVANCE, boothAdvanceC);
+                                API.off(API.DJ_ADVANCE, boothAdvanceB);
                             }, 200);
                         }
                     }
@@ -1313,51 +1297,51 @@ function fixBooth(){
             }
         } else {
             API.sendChat("/em Registering FixBooth: Replacing " + DJName + " with " + firstUser);
-            new RoomPropsService(Slug, true, Models.room.data.waitListEnabled, Models.room.data.maxPlays, Models.room.data.maxDJs);
-            API.addEventListener(API.DJ_ADVANCE, boothAdvanceD);
+            API.moderateRoomProps(true, true);
+            API.on(API.DJ_ADVANCE, boothAdvanceD);
             function boothAdvanceD() {
                 setTimeout(function () {
-                    new ModerationRemoveDJService(API.getDJs()[1].id);
+                    API.moderateRemoveDJ(API.getDJs()[1].id);
                 }, 50);
                 setTimeout(function () {
                     API.sendChat("/add " + firstUser);
                 }, 100);
                 setTimeout(function () {
-                    new RoomPropsService(Slug, false, Models.room.data.waitListEnabled, Models.room.data.maxPlays, Models.room.data.maxDJs);
+                    API.moderateRoomProps(false, true);
                 }, 150);
                 setTimeout(function () {
                     fixover = true;
-                    API.removeEventListener(API.DJ_ADVANCE, boothAdvanceD);
+                    API.off(API.DJ_ADVANCE, boothAdvanceD);
                 }, 200);
             }
         }
     }
 }
 function removedj(data) {
-    if (Models.room.data.staff[API.getSelf().id] && Models.room.data.staff[API.getSelf().id] > 1) {
+    if (API.getStaff[API.getUser().id] && API.getStaff[API.getUser().id] > 1) {
         var usernames = [],id = [],users = API.getUsers();
         for (var i in users) {
             usernames.push(users[i].username);
             id.push(users[i].id);
         }
-        if (usernames.indexOf(target) < 0) log("user not found");
+        if (usernames.indexOf(target) < 0) API.chatLog("user not found");
         else {
             listlocation = usernames.indexOf(target);
-            new ModerationRemoveDJService(id[listlocation]);
+            new API.moderateRemoveDJ(id[listlocation]);
         }
     }
 }
 function adddj(data) {
-    if (Models.room.data.staff[API.getSelf().id] && Models.room.data.staff[API.getSelf().id] > 1) {
+    if (API.getStaff[API.getUser().id] && API.getStaff[API.getUser().id] > 1) {
         var usernames = [],id = [],users = API.getUsers();
         for (var i in users) {
             usernames.push(users[i].username);
             id.push(users[i].id);
         }
-        if (usernames.indexOf(target) < 0) log("user not found");
+        if (usernames.indexOf(target) < 0) API.chatLog("user not found");
         else {
             listlocation = usernames.indexOf(target);
-            new ModerationAddDJService(id[listlocation]);
+            new API.moderateAddDJ(id[listlocation]);
         }
     }
 }
@@ -1367,7 +1351,7 @@ function getuserinfo(data) {
         usernames.push(users[i].username);
         id.push(users[i].id);
     }
-    if (usernames.indexOf(target) < 0) log("user not found");
+    if (usernames.indexOf(target) < 0) API.chatLog("user not found");
     else {
         listlocation = usernames.indexOf(target);
         var uid = id[listlocation];
@@ -1409,8 +1393,6 @@ function getuserinfo(data) {
                 break;
         }
         switch(statuscode){
-            case -1:
-                var status = "Idle";
             case 0:
                 var status = "Available";
                 break;
